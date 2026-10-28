@@ -140,16 +140,50 @@ To remove nitrocellulose membrane background gradients, non-specific binding sta
 * **Trapezoidal Integration**:
   $$\text{AUC} = \sum_{i} \frac{y_i + y_{i+1}}{2} \cdot dx, \quad \text{where } dx = \frac{1000}{H_{\text{membrane}}}$$
 
-### 4. 4-Parameter Logistic (4PL) Inverse Calibration
-Solves the dynamic concentration $x$ from the analytical ratio $y = \text{AUC}_T / \text{AUC}_C$:
+### 4. 4-Parameter Logistic (4PL) Calibration & LoD
 
-$$x = c \cdot \left(\frac{a - d}{y - d} - 1\right)^{1/b}$$
+RapidQuant converts the analytical optical ratio $y = \text{AUC}_T / \text{AUC}_C$ into an absolute analyte concentration ($x$) using a non-linear 4-Parameter Logistic (4PL) regression curve:
 
-* $a = 0.0000$ (Blank baseline floor)
-* $b = 5.0000$ (Hill slope coefficient)
-* $c = 0.0581\text{ ng/mL}$ (Inflection point / $\text{EC}_{50}$)
-* $d = 0.9722$ (Saturation asymptote)
-* $\text{LoD} = 0.0297\text{ ng/mL}$ (Limit of Detection conforming to CLSI EP17-A2)
+#### Mathematical Models
+
+* **Forward Curve (Dose-Response)**:
+  $$y = d + \frac{a - d}{1 + \left(\frac{x}{c}\right)^b}$$
+
+* **Inverse Calibration (Sample Quantification)**:
+  $$x = c \cdot \left(\frac{a - d}{y - d} - 1\right)^{1/b}$$
+
+#### Parameters Overview
+
+| Parameter | Calibrated Value | Bioanalytical Description |
+| :--- | :--- | :--- |
+| **$y$** | Analytical Signal | Optical response ratio: $y = \text{AUC}_T / \text{AUC}_C$ (Test line area normalized by Control line area). |
+| **$x$** | Target Output | Unknown analyte concentration in sample ($\text{ng/mL}$). |
+| **$a$** | `0.0000` | **Zero-Dose Baseline Floor**: Expected optical signal when no analyte is present ($x = 0$). |
+| **$b$** | `5.0000` | **Hill Slope (Sensitivity)**: Steepness of the response curve; defines transition rate from blank to saturation. |
+| **$c$** | `0.0581 ng/mL` | **Inflection Point ($\text{EC}_{50}$)**: Analyte concentration producing 50% maximal optical response ($\frac{a + d}{2}$). |
+| **$d$** | `0.9722` | **Saturation Asymptote**: Upper plateau signal when all nanoparticle conjugate sites are saturated ($x \to \infty$). |
+
+---
+
+#### Limit of Detection (LoD) Determination (CLSI EP17-A2 Standard)
+
+RapidQuant determines the clinical Limit of Detection (LoD) in strict accordance with the **CLSI EP17-A2** bioanalytical guidelines:
+
+1. **Limit of Blank ($\text{LoB}$)**  
+   The highest optical signal expected from a blank sample with 95% confidence ($\alpha = 0.05$):
+   $$\text{LoB} = \mu_{\text{blank}} + 1.645 \cdot \sigma_{\text{blank}} = 0.0000$$
+
+2. **Limit of Detection Optical Signal ($\text{LoD}_{\text{signal}}$)**  
+   The lowest detectable optical ratio distinguishable from blank at a 95% detection rate ($\beta = 0.05$), with low-concentration variance $\sigma_{\text{low}} = 0.020$:
+   $$\text{LoD}_{\text{signal}} = \text{LoB} + 1.645 \cdot \sigma_{\text{low}} = 0 + (1.645 \cdot 0.020) = 0.0329$$
+
+3. **Limit of Detection Concentration ($\text{LoD}_{\text{conc}}$)**  
+   Converted back into physical concentration ($\text{ng/mL}$) via the inverse 4PL equation:
+   $$\text{LoD}_{\text{conc}} = c \cdot \left(\frac{a - d}{\text{LoD}_{\text{signal}} - d} - 1\right)^{1/b} = 0.0581 \cdot \left(\frac{0 - 0.9722}{0.0329 - 0.9722} - 1\right)^{1/5} = 0.0297\text{ ng/mL}$$
+
+#### Clinical Interpretation Rule
+* **$y < 0.0329$** ($x < 0.0297\text{ ng/mL}$): **Negative / Below LoD** — Sample has no detectable analyte or falls below the reliable quantification threshold.
+* **$y \ge 0.0329$** ($x \ge 0.0297\text{ ng/mL}$): **Positive & Quantified** — Analyte confirmed and quantified with $\ge 95\%$ analytical confidence.
 
 ---
 
