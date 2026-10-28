@@ -115,7 +115,7 @@ $$\Delta A(y) = \max\Big(0,\, A_{\text{Green}}(y) - A_{\text{Red}}(y)\Big) = \ma
 
 * **Green Absorbance**: $A_{\text{Green}}(y) = 255 - \bar{I}_{\text{Green}}(y)$ *(High on ruby-red gold bands)*
 * **Red Absorbance**: $A_{\text{Red}}(y) = 255 - \bar{I}_{\text{Red}}(y)$ *(Low on ruby-red gold bands)*
-* **Algebraic Identity**: Subtracting red absorbance from green absorbance algebraically simplifies to raw $(\bar{I}_{\text{Red}} - \bar{I}_{\text{Green}})$, yielding a clean positive analytical peak.
+* **Algebraic Identity**: Subtracting red absorbance from green absorbance algebraically simplifies to raw ($\bar{I}_{\text{Red}} - \bar{I}_{\text{Green}}$), yielding a clean positive analytical peak.
 
 ### 2. Adaptive Morphological Baseline
 To remove membrane wetting gradients, non-specific binding stains, and ambient vignetting without flattening high-frequency reaction bands, RapidQuant implements a 1D morphological grey opening with structuring element radius $R = 35\text{ px}$:
