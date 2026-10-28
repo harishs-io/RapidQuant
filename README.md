@@ -120,12 +120,19 @@ $$\Delta A(y) = \max(0, A_{\text{Green}}(y) - A_{\text{Red}}(y)) = \max(0, I_{\t
   This produces a clean, positive analytical peak directly over the reaction band.
 
 ### 2. Adaptive Morphological Baseline
-To remove membrane wetting gradients, non-specific binding stains, and ambient vignetting without flattening high-frequency reaction bands, RapidQuant implements a 1D morphological grey opening with structuring element radius $R = 35\text{ px}$:
+To remove nitrocellulose membrane background gradients, non-specific binding stains, and ambient vignetting without flattening high-frequency reaction bands, RapidQuant implements a 1D morphological grey opening (`scipy.ndimage.grey_opening`) with sliding structuring radius $R = 35\text{ px}$ on the raw optical signal $S$:
 
-1. **Erosion**: $E(i) = \min_{j \in [i-R, i+R]} \text{Signal}[j]$
-2. **Dilation**: $D(i) = \max_{j \in [i-R, i+R]} E[j]$
-3. **Continuum Envelope**: $\text{Baseline}[i] = \min(D(i), \text{Signal}[i])$
-4. **Net Signal**: $\text{NetSignal}[i] = \max(0, \text{Signal}[i] - \text{Baseline}[i])$
+1. **Erosion** *(scans local minimum within radius $R$)*:
+   $$E(i) = \min_{|k| \le R} S[i + k]$$
+
+2. **Dilation** *(creates lower morphological envelope connecting baseline valleys)*:
+   $$D(i) = \max_{|k| \le R} E[i + k]$$
+
+3. **Continuum Envelope** *(ensures baseline never exceeds raw optical signal)*:
+   $$B(i) = \min(D(i), S[i])$$
+
+4. **Net Signal Extraction** *(yields baseline-subtracted optical chromatogram)*:
+   $$S_{\text{net}}(i) = \max(0, S[i] - B(i))$$
 
 ### 3. Noise Gating & 5% Apex Integration
 * **Noise Rejection**: Requires peak apex height $\ge 5.0\text{ a.u.}$ and saddle delta $\ge 2.5\text{ a.u.}$, otherwise strictly forcing $T = 0.0000$ (True blank confirmed).
