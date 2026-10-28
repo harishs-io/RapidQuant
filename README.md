@@ -31,7 +31,7 @@ RapidQuant replaces subjective, qualitative visual reading with objective, labor
 - 🔬 **Cascaded Dual-Stage YOLOv8**: Dedicated edge-optimized ONNX models running via WebAssembly (WASM):
   - **Stage 1 (Cassette/Strip Detector)**: Detects and crops the nitrocellulose membrane area regardless of ambient illumination or perspective tilt.
   - **Stage 2 (Band Classifier)**: Identifies, bounds, and classifies the **Control (C)** and **Test (T)** reaction lines with sub-pixel centroid accuracy.
-- 🌈 **LSPR Differential Optical Densitometry ($G - R$)**: Targets the Localized Surface Plasmon Resonance absorbance peak of colloidal gold nanoparticles ($\lambda \approx 530\text{ nm}$).
+- 🌈 **LSPR Differential Optical Densitometry ($A_{\text{Green}} - A_{\text{Red}}$)**: Targets the Localized Surface Plasmon Resonance absorbance peak of colloidal gold nanoparticles ($\lambda \approx 530\text{ nm}$).
 - 📈 **1D Morphological Continuum Baseline**: Transpiled from mathematical morphology (`scipy.ndimage.grey_opening`, $R = 35\text{ px}$) to dynamically eliminate nitrocellulose background gradients, sample matrix meniscus, and illumination shadowing.
 - 🎯 **5% Apex Integration & Noise Gating**: Eliminates false positives on blank specimens ($T = 0.0000$), measuring true Area Under the Curve (AUC) in normalized migration distance ($R_f$) units.
 - 📐 **4-Parameter Logistic (4PL) Calibration**: Inverts optical density ratios ($T/C$) into true analyte concentrations (e.g., ng/mL) with clinical Limit of Detection (LoD) calculations conforming to **CLSI EP17-A2**.
@@ -106,10 +106,16 @@ flowchart TD
 
 ## 📐 Bioanalytical Optical Physics
 
-### 1. LSPR Differential Densitometry ($G - R$)
-Colloidal gold nanoparticles demonstrate localized surface plasmon resonance resulting in strong optical absorption in the blue-green spectrum ($\approx 530\text{ nm}$) while scattering or transmitting red wavelengths ($\approx 650\text{ nm}$). RapidQuant calculates row-averaged optical density as:
+### 1. LSPR Differential Densitometry ($A_{\text{Green}} - A_{\text{Red}}$)
+Colloidal gold nanoparticles demonstrate localized surface plasmon resonance (LSPR) resulting in strong optical absorbance in the green spectrum ($\approx 530\text{ nm}$) while transmitting/scattering red light ($\approx 650\text{ nm}$). 
 
-$$\text{Diff}(y) = \text{Clamp}\Big([255 - \bar{I}_{\text{Green}}(y)] - [255 - \bar{I}_{\text{Red}}(y)],\, 0,\, 255\Big) = \text{Clamp}\Big(\bar{I}_{\text{Red}}(y) - \bar{I}_{\text{Green}}(y),\, 0,\, 255\Big)$$
+In optical densitometry, raw pixel intensity $\bar{I}$ measures transmittance, so optical absorbance is defined as $A = 255 - \bar{I}$. RapidQuant measures the differential absorbance ($A_{\text{Green}} - A_{\text{Red}}$):
+
+$$\Delta A(y) = \max\Big(0,\, A_{\text{Green}}(y) - A_{\text{Red}}(y)\Big) = \max\Big(0,\, \bar{I}_{\text{Red}}(y) - \bar{I}_{\text{Green}}(y)\Big)$$
+
+* **Green Absorbance**: $A_{\text{Green}}(y) = 255 - \bar{I}_{\text{Green}}(y)$ *(High on ruby-red gold bands)*
+* **Red Absorbance**: $A_{\text{Red}}(y) = 255 - \bar{I}_{\text{Red}}(y)$ *(Low on ruby-red gold bands)*
+* **Algebraic Identity**: Subtracting red absorbance from green absorbance algebraically simplifies to raw $(\bar{I}_{\text{Red}} - \bar{I}_{\text{Green}})$, yielding a clean positive analytical peak.
 
 ### 2. Adaptive Morphological Baseline
 To remove membrane wetting gradients, non-specific binding stains, and ambient vignetting without flattening high-frequency reaction bands, RapidQuant implements a 1D morphological grey opening with structuring element radius $R = 35\text{ px}$:
