@@ -130,27 +130,6 @@ RapidQuant features a hybrid OTA deployment architecture powered by GitHub Pages
            └──────────────────────────────────────────────┘
 ```
 
-### How to Release an App Update
-When you introduce new calibration formulas, clinical assays, or UI enhancements:
-1. Edit `index.html` with your updates.
-2. Increment the version number in `version.json`:
-   ```json
-   {
-     "appName": "RapidQuant",
-     "version": "2.1.0",
-     "build": 2,
-     "releaseDate": "2026-11-01",
-     "otaUrl": "https://harishs-io.github.io/RapidQuant/",
-     "changelog": "Added multi-target multiplexed band calibration."
-   }
-   ```
-3. Commit and push:
-   ```bash
-   git commit -am "feat: release v2.1.0"
-   git push origin main
-   ```
-Every installed app will automatically detect and receive the update in the background when connected to the internet, without anyone having to reinstall an APK.
-
 ---
 
 ## 📂 Repository Structure
