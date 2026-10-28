@@ -1,7 +1,7 @@
 {
   "name": "RapidQuant — Point-of-Care Bioanalytical AI",
   "short_name": "RapidQuant",
-  "description": "Medical-grade 100% offline-first lateral flow immunoassay (LFIA) quantitative analyzer using cascaded YOLOv8 AI, LSPR differential densitometry, and 4PL calibration.",
+  "description": "Automated LFIA laboratory validation: replaces manual ImageJ densitometry with instant YOLOv8 AI, 4PL curves, and publication-ready figures with replicate statistics.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0F172A",

@@ -21,23 +21,33 @@
 
 ## 📌 About RapidQuant
 
-**RapidQuant** is a medical-grade, 100% offline-first point-of-care (PoC) bioanalytical AI platform that transforms everyday smartphones and edge web browsers into high-precision lateral flow immunoassay (LFIA) quantitative analyzers.
+### 🧪 The Challenge: The Classical Laboratory Bottleneck
+In traditional biomedical research and diagnostic assay development, conducting the laboratory validation of a Lateral Flow Immunoassay (LFIA) and determining its **Limit of Detection (LoD)** is a tedious, multi-hour manual ordeal:
 
-### 🎯 The Clinical Mission
-Traditional rapid lateral flow tests (such as diagnostic strips for snakebite envenomation, infectious pathogens, cardiac markers, and hormones) rely on subjective visual interpretation by the human eye. This visual approach introduces inter-operator variability, causes false-negative misdiagnoses near the detection limit, and provides zero numerical data to guide critical clinical dosing decisions.
+1. **Manual Photography**: Capturing strip photos under inconsistent laboratory lighting.
+2. **Manual Preprocessing**: Manually cropping nitrocellulose strip boundaries in image editing tools.
+3. **ImageJ Densitometry**: Importing images into **ImageJ / Fiji**, hand-drawing bounding boxes over the Test (T) and Control (C) bands, and extracting raw 1D pixel intensity profile plots.
+4. **Data Transcription**: Copying raw values into spreadsheets (Excel, Origin, or GraphPad Prism).
+5. **Replicate Calculations**: Manually performing baseline background subtraction, numerical trapezoidal integration (Area Under the Curve — AUC), and computing replicate means, standard deviations, and coefficients of variation (%CV).
+6. **Equation Solving & Statistics**: Manually fitting non-linear 4-Parameter Logistic (4PL) regression models and iteratively solving for the Limit of Blank ($\text{LoB}$) and Limit of Detection ($\text{LoD}$).
 
-RapidQuant eliminates this bottleneck by replacing qualitative visual inspection with **laboratory-grade optical densitometry and deep-learning-driven quantification** ($0.1\text{ to } 100\text{ ng/mL}$) directly on mobile devices in under 5 seconds — delivering the analytical accuracy of a \$10,000+ benchtop spectrophotometer in the palm of a clinician's hand.
+This classical routine requires hours to days per calibration series, introduces severe human subjectivity (differing crop margins, variable ImageJ box placements), and slows down critical diagnostic assay iterations.
 
-### 🔬 Core Technological Architecture
-* **Dual-Stage Cascaded Neural Vision**: Two specialized YOLOv8 neural networks running locally on-device via hardware-accelerated WebAssembly (WASM):
-  * **Stage 1 (Strip Detector)**: Automatically detects, crops, and perspective-rectifies the nitrocellulose membrane area from arbitrary camera angles and distances, isolating the reactive strip from ambient cassette plastic and shadows ($99.5\%\text{ mAP@50}$, precision $99.1\%$).
-  * **Stage 2 (Band Classifier)**: Identifies, bounds, and classifies the **Control (C)** and **Test (T)** reaction lines with sub-pixel spatial accuracy ($\le 0.1\text{ px}$ centroid drift, $99.1\%\text{ mAP@50}$).
-* **LSPR Differential Optical Physics**: Exploits the Localized Surface Plasmon Resonance (LSPR) green-spectrum absorption of colloidal gold nanoparticles ($\lambda \approx 530\text{ nm}$) through differential optical densitometry ($\Delta A = A_{\text{Green}} - A_{\text{Red}} = I_{\text{Red}} - I_{\text{Green}}$) to maximize analytical contrast while subtracting membrane background scatter.
-* **1D Adaptive Morphological Baseline Filtering**: Implements a 1D morphological grey opening (`scipy.ndimage.grey_opening`, structuring radius $R = 35\text{ px}$) to dynamically eliminate nitrocellulose background gradients, membrane wetting fronts, and ambient lighting vignetting without flattening high-frequency reaction peaks.
-* **Noise-Gated 5% Apex Integration**: Scans peak boundaries laterally until signal falls below 5% of apex height, applying trapezoidal integration (AUC) and requiring peak height $\ge 5.0\text{ a.u.}$ and saddle delta $\ge 2.5\text{ a.u.}$ to strictly force $T = 0.0000$ on true blank strips.
-* **CLSI EP17-A2 Calibrated 4PL Quantification**: Automatically fits 4-Parameter Logistic (4PL) dose-response curves ($R^2 \ge 0.99$) and rigorously computes the Limit of Blank ($\text{LoB}$) and clinical Limit of Detection ($\text{LoD} = 0.0297\text{ ng/mL}$) with $95\%$ statistical confidence ($\alpha = 0.05, \beta = 0.05$), while flagging High-Dose Hook Effects ($> 100\text{ ng/mL}$).
-* **100% Offline & Private by Design**: All computer vision inference, image processing, and numerical integrations run purely on-device. No patient images or diagnostic telemetry are ever transmitted across networks (HIPAA & GDPR compliant by architecture).
-* **Universal Multi-Platform Deployment**: Available as a native Android APK (43 MB), native iOS IPA / instant PWA (42 MB), and web platform with Over-the-Air (OTA) automated cloud updates via GitHub Pages.
+---
+
+### ⚡ The Solution: End-to-End One-Click Automation
+**RapidQuant** completely automates this entire scientific validation pipeline into a single, seamless workflow:
+
+> **Simply snap a photo or upload strip images — RapidQuant handles the entire computer vision, optical physics, 4PL regression, and replicate statistics in seconds, instantly outputting publication-ready figures.**
+
+#### What RapidQuant Automates Instantly:
+* 🤖 **Autonomous Strip Detection & Rectification**: Cascaded YOLOv8 AI isolates the reactive nitrocellulose membrane from any smartphone angle or ambient lighting, completely replacing manual image cropping ($99.5\%\text{ mAP@50}$).
+* 📍 **Sub-Pixel Band Localization**: Pinpoints Control and Test bands with $\le 0.1\text{ px}$ spatial centroid precision, eliminating subjective hand-drawn ImageJ bounding boxes.
+* 🌈 **LSPR Differential Optical Physics**: Extracts colloidal gold Localized Surface Plasmon Resonance absorption ($\lambda \approx 530\text{ nm}$) via differential densitometry ($\Delta A = A_{\text{Green}} - A_{\text{Red}} = I_{\text{Red}} - I_{\text{Green}}$) and removes membrane background gradients via 1D morphological grey opening (`grey_opening`, $R = 35\text{ px}$).
+* 📊 **Automated Replicate Statistics**: Automatically groups experimental replicates across concentration series, computing mean analytical ratios, standard deviations, and %CV with zero spreadsheet transcription.
+* 📈 **4PL Calibration & CLSI EP17-A2 LoD**: Automatically fits the non-linear 4-Parameter Logistic standard curve ($R^2 \ge 0.99$) and rigorously computes the Limit of Blank ($\text{LoB}$) and clinical Limit of Detection ($\text{LoD} = 0.0297\text{ ng/mL}$) with $95\%$ statistical certainty.
+* 🎨 **Publication-Ready Figures & Reports**: Instantly generates high-resolution publication-quality vector plots (optical chromatograms with baseline continuum, 4PL calibration curves with replicate error bars, and analytical audit tables) ready for journal submissions, regulatory filings, or clinical point-of-care decisions.
+* 🔒 **100% Offline & Private**: Runs entirely in the browser and native mobile apps without cloud servers or data transmission.
 
 ---
 
