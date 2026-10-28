@@ -191,3 +191,4 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
   Developed with ❤️ for Global Point-of-Care Diagnostic Accessibility.<br>
   <strong>RapidQuant Platform — Precise, Fast, and Completely Offline.</strong>
 </p>
+

@@ -5095,9 +5095,15 @@
           if (!htmlRes.ok) return;
           const newHtmlContent = await htmlRes.text();
 
-          // If inside Native Android or Flutter App: bridge to save in persistent app storage
+          // If inside Native Android, iOS, or Flutter App: bridge to save in persistent app storage
           if (window.AndroidAssetBridge && window.AndroidAssetBridge.saveOtaUpdate) {
             window.AndroidAssetBridge.saveOtaUpdate(manifest.version, newHtmlContent);
+          } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.IOSBridge) {
+            window.webkit.messageHandlers.IOSBridge.postMessage({
+              action: 'saveOtaUpdate',
+              version: manifest.version,
+              html: newHtmlContent
+            });
           } else if (window.FlutterBridge && window.FlutterBridge.postMessage) {
             window.FlutterBridge.postMessage(JSON.stringify({
               action: 'saveOtaUpdate',
@@ -5124,6 +5130,8 @@
               otaApplyBtn.onclick = () => {
                 if (window.AndroidAssetBridge && window.AndroidAssetBridge.applyOtaUpdate) {
                   window.AndroidAssetBridge.applyOtaUpdate();
+                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.IOSBridge) {
+                  window.webkit.messageHandlers.IOSBridge.postMessage({ action: 'applyOtaUpdate' });
                 } else if (window.FlutterBridge && window.FlutterBridge.postMessage) {
                   window.FlutterBridge.postMessage(JSON.stringify({ action: 'applyOtaUpdate' }));
                 } else {
