@@ -5095,8 +5095,10 @@
           if (!htmlRes.ok) return;
           const newHtmlContent = await htmlRes.text();
 
-          // If inside Android Flutter App: bridge to save in persistent app storage
-          if (window.FlutterBridge && window.FlutterBridge.postMessage) {
+          // If inside Native Android or Flutter App: bridge to save in persistent app storage
+          if (window.AndroidAssetBridge && window.AndroidAssetBridge.saveOtaUpdate) {
+            window.AndroidAssetBridge.saveOtaUpdate(manifest.version, newHtmlContent);
+          } else if (window.FlutterBridge && window.FlutterBridge.postMessage) {
             window.FlutterBridge.postMessage(JSON.stringify({
               action: 'saveOtaUpdate',
               version: manifest.version,
@@ -5120,7 +5122,9 @@
 
             if (otaApplyBtn) {
               otaApplyBtn.onclick = () => {
-                if (window.FlutterBridge && window.FlutterBridge.postMessage) {
+                if (window.AndroidAssetBridge && window.AndroidAssetBridge.applyOtaUpdate) {
+                  window.AndroidAssetBridge.applyOtaUpdate();
+                } else if (window.FlutterBridge && window.FlutterBridge.postMessage) {
                   window.FlutterBridge.postMessage(JSON.stringify({ action: 'applyOtaUpdate' }));
                 } else {
                   window.location.reload();
