@@ -88,18 +88,18 @@ If you prefer installing the native iOS binary package onto your iPhone:
 ## 🔬 Scientific & Algorithmic Pipeline
 
 ```mermaid
-flowchart TD
-    A["Raw Camera Frame / Uploaded Image"] --> B["Stage 1: YOLOv8 Strip Detector (ONNX WASM)"]
-    B --> C["Nitrocellulose Membrane Bounding & Perspective Rectification"]
-    C --> D["Stage 2: YOLOv8 Band Classifier (ONNX WASM)"]
-    D --> E["C-Band & T-Band Spatial Localization"]
-    E --> F["LSPR Differential Optical Densitometry: (G - R) Profile"]
-    F --> G["1D Morphological Continuum Baseline (Radius = 35 px)"]
-    G --> H["Noise-Gated 5% Apex Boundary Numerical Integration (AUC)"]
-    H --> I["Analytical Optical Ratio: y = AUC_T / AUC_C"]
-    I --> J["4-Parameter Logistic (4PL) Inverse Calibration"]
-    J --> K["Quantitative Concentration (ng/mL) + CLSI EP17-A2 LoD Classification"]
-    K --> L["Interactive Chromatogram & Printable Clinical Audit Report"]
+flowchart LR
+    A["Raw Camera Frame<br/>/ Uploaded Image"] --> B["Stage 1: YOLOv8<br/>Strip Detector (WASM)"]
+    B --> C["Nitrocellulose Bounding<br/>& Rectification"]
+    C --> D["Stage 2: YOLOv8<br/>Band Classifier (WASM)"]
+    D --> E["C-Band & T-Band<br/>Spatial Localization"]
+    E --> F["LSPR Differential<br/>(G - R) Densitometry"]
+    F --> G["1D Morphological<br/>Baseline (R = 35 px)"]
+    G --> H["Noise-Gated 5% Apex<br/>AUC Integration"]
+    H --> I["Analytical Optical Ratio<br/>y = AUC_T / AUC_C"]
+    I --> J["4-Parameter Logistic (4PL)<br/>Inverse Calibration"]
+    J --> K["Quantitative Concs +<br/>CLSI EP17-A2 LoD"]
+    K --> L["Interactive Chromatogram<br/>& Audit Report"]
 ```
 
 ---
