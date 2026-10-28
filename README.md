@@ -11,9 +11,9 @@
 
 <p align="center">
   <a href="https://harishs-io.github.io/RapidQuant/"><img src="https://img.shields.io/badge/Live%20PWA-Launch%20App-00D2B4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live App"></a>
+  <a href="https://harishs-io.github.io/RapidQuant/RapidQuant.apk"><img src="https://img.shields.io/badge/Android%20APK-Download%20(43%20MB)-34D399?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK"></a>
+  <a href="https://harishs-io.github.io/RapidQuant/RapidQuant.ipa"><img src="https://img.shields.io/badge/iOS%20IPA-Download%20(42%20MB)-38BDF8?style=for-the-badge&logo=apple&logoColor=white" alt="Download iOS IPA"></a>
   <a href="https://github.com/harishs-io/RapidQuant"><img src="https://img.shields.io/badge/Version-2.0.0-blue?style=for-the-badge" alt="Version 2.0.0"></a>
-  <a href="#offline-first-privacy-by-design"><img src="https://img.shields.io/badge/Architecture-100%25%20Offline-0B1519?style=for-the-badge&logo=shield" alt="100% Offline"></a>
-  <a href="#over-the-air-ota-instant-updates"><img src="https://img.shields.io/badge/Updates-Over--The--Air%20(OTA)-6366F1?style=for-the-badge" alt="OTA Updates"></a>
   <a href="#license"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License MIT"></a>
 </p>
 
@@ -39,19 +39,49 @@ RapidQuant replaces subjective, qualitative visual reading with objective, labor
 
 ---
 
-## 🚀 Live Access & Installation
+## 🚀 Download & Installation
 
-### 1. Web App / Progressive Web App (PWA)
-Launch instantly in any modern mobile or desktop browser (Chrome, Safari, Edge, Firefox):
-👉 **[https://harishs-io.github.io/RapidQuant/](https://harishs-io.github.io/RapidQuant/)**
+### 🤖 1. Android Installation (Direct APK)
+For any Android smartphone, tablet, or clinical field device (Samsung, Google Pixel, OnePlus, Xiaomi, etc.):
 
-> **Install as PWA**: Open the link on your mobile device, tap the browser menu (or share icon on iOS), and select **"Add to Home Screen"**. The app installs as a native-like app that opens full-screen and works completely offline!
+- **Direct Download**: [**`RapidQuant.apk`**](RapidQuant.apk) *(43 MB, API level 24 to 35)*
+- **Installation Steps**:
+  1. Download `RapidQuant.apk` directly on your Android phone.
+  2. Tap the downloaded file in your browser downloads or file manager.
+  3. If prompted, allow *"Install unknown apps"* for your browser.
+  4. Tap **Install** ➔ Open **RapidQuant**!
+  - Fully offline point-of-care bioanalytical platform with live camera alignment and hardware-accelerated local inference.
 
-### 2. Standalone Android Release APK
-For clinical field tablets and air-gapped Android devices, a production APK with native hardware camera integration and local storage persistence is available:
-- **Download**: [`app-release.apk`](file:///Volumes/PERSONAL/EVL/LFIA/mobile_app/web_pwa/app-release.apk) (bundled in repository releases).
-- **Target OS**: Android 7.0+ (API level 24 to 35).
-- **Permissions**: Camera (for real-time strip scanning) and File Access (for saving audit reports).
+---
+
+### 🍎 2. iOS Installation (iPhone & iPad — 2 Free Options)
+
+#### Option A: Instant Web App / PWA (Recommended — 5 Seconds, No PC / No Cables)
+Apple allows any iPhone user to install RapidQuant directly from Safari as a standalone offline app without needing an App Store account or TestFlight:
+
+1. On your iPhone or iPad, open Safari and go to:  
+   👉 **[https://harishs-io.github.io/RapidQuant/](https://harishs-io.github.io/RapidQuant/)**
+2. Tap the **Share button** at the bottom (the square with an arrow pointing up: <kbd>⎋</kbd>).
+3. Scroll down and tap **"Add to Home Screen"** (<kbd>➕</kbd>), then tap **Add**.
+4. **RapidQuant** will appear on your iPhone home screen with the official icon.
+5. Tap it to launch:
+   - Launches in **full-screen standalone mode** (no Safari URL bars or browser controls).
+   - Prompts for iPhone **Camera** permission for live cassette alignment.
+   - Runs YOLOv8 AI models locally on your iPhone's Neural Engine / WebAssembly.
+   - Works **100% offline in airplane mode**.
+
+#### Option B: Direct Native IPA Installation via Sideloadly (Free for PC / Mac)
+If you prefer installing the native iOS binary package onto your iPhone:
+
+- **Package Download**: [**`RapidQuant.ipa`**](RapidQuant.ipa) *(42 MB, iOS 16.0+)*
+- **Step-by-Step Installation**:
+  1. Download and install **[Sideloadly](https://sideloadly.io/)** (Free for Windows & macOS).
+  2. Connect your iPhone to your computer via USB cable.
+  3. Open Sideloadly and drag & drop **`RapidQuant.ipa`** into the window.
+  4. Enter your standard Apple ID (used solely to generate a free personal signing certificate).
+  5. Click **Start** — Sideloadly will sign and install RapidQuant directly onto your iPhone.
+  6. On your iPhone: Go to **Settings** ➔ **General** ➔ **VPN & Device Management**, tap your Apple ID, and tap **"Trust"**.
+  7. Open **RapidQuant** on your iPhone!
 
 ---
 

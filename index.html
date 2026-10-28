@@ -90,6 +90,9 @@
         </button>
       </div>
       <div class="flex items-center gap-2">
+        <button id="nav-download-app-btn" class="px-2.5 py-1.5 rounded-xl bg-teal-50 border border-teal-200 text-teal-800 text-xs font-bold shadow-2xs hover:bg-teal-100 flex items-center gap-1 active:scale-95 transition" title="Download & Install App">
+          <span>📥</span> Get App
+        </button>
         <button id="nav-archives-btn" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold shadow-2xs hover:bg-slate-50 flex items-center gap-1 active:scale-95 transition" title="Open Archives">
           <span>📁</span> Archives
         </button>
@@ -98,6 +101,58 @@
         </button>
       </div>
     </header>
+
+    <!-- INSTALL / DOWNLOAD APP MODAL -->
+    <div id="download-app-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+      <div class="bg-white rounded-3xl max-w-sm w-full p-5 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">📱</span>
+            <h3 class="font-bold text-slate-900 text-base">Get RapidQuant Mobile</h3>
+          </div>
+          <button id="close-download-modal-btn" class="text-slate-400 hover:text-slate-700 p-1 rounded-lg text-lg leading-none cursor-pointer">✕</button>
+        </div>
+
+        <div class="mt-4 space-y-4">
+          <!-- Android Card -->
+          <div class="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-black text-emerald-950 uppercase tracking-wide flex items-center gap-1.5">
+                <span>🤖</span> Android
+              </span>
+              <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full">APK • 43 MB</span>
+            </div>
+            <p class="text-[11px] text-emerald-800/90 mb-2.5">Direct offline installer for Samsung, Google Pixel, and all Android devices.</p>
+            <a href="RapidQuant.apk" download="RapidQuant.apk" class="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition active:scale-95 text-center">
+              <span>⬇️</span> Download Android APK
+            </a>
+          </div>
+
+          <!-- iOS Card -->
+          <div class="p-3.5 rounded-2xl bg-sky-50/70 border border-sky-200/80 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-sky-950 uppercase tracking-wide flex items-center gap-1.5">
+                <span>🍎</span> iPhone / iPad
+              </span>
+              <span class="text-[10px] font-bold text-sky-700 bg-sky-100/80 px-2 py-0.5 rounded-full">iOS 16+</span>
+            </div>
+            
+            <div class="bg-white/80 p-2.5 rounded-xl border border-sky-100 text-[11px] text-sky-900">
+              <strong class="text-sky-950 font-bold block mb-0.5">Option 1: Instant Install (No PC / 5s)</strong>
+              Tap Safari Share <span class="px-1 py-0.5 bg-slate-100 rounded text-[10px] font-mono">⎋</span> ➔ <strong>"Add to Home Screen"</strong> <span class="px-1 py-0.5 bg-slate-100 rounded text-[10px] font-mono">➕</span> for instant standalone offline app experience without cables.
+            </div>
+
+            <div>
+              <strong class="text-sky-950 font-bold text-[11px] block mb-1">Option 2: Native IPA Package</strong>
+              <a href="RapidQuant.ipa" download="RapidQuant.ipa" class="w-full py-2 px-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition active:scale-95 text-center">
+                <span>⬇️</span> Download iOS IPA (42 MB)
+              </a>
+              <span class="text-[10px] text-sky-700/80 block mt-1 text-center">Install on PC/Mac using free Sideloadly tool</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- OVER-THE-AIR (OTA) GITHUB UPDATE BANNER -->
     <div id="ota-update-banner" class="hidden w-full bg-gradient-to-r from-teal-700 via-teal-800 to-slate-900 text-white px-3.5 py-2.5 shadow-md flex items-center justify-between z-50 border-b border-teal-400/30">
@@ -5155,6 +5210,25 @@
 
     // Launch OTA check 1.5s after initial UI render (Zero latency impact)
     setTimeout(checkOtaUpdatesSilent, 1500);
+
+    // Download / Install App Modal Handlers
+    const downloadAppModal = document.getElementById('download-app-modal');
+    const navDownloadAppBtn = document.getElementById('nav-download-app-btn');
+    const closeDownloadModalBtn = document.getElementById('close-download-modal-btn');
+
+    if (navDownloadAppBtn && downloadAppModal) {
+      navDownloadAppBtn.addEventListener('click', () => {
+        downloadAppModal.classList.remove('hidden');
+      });
+    }
+    if (closeDownloadModalBtn && downloadAppModal) {
+      closeDownloadModalBtn.addEventListener('click', () => {
+        downloadAppModal.classList.add('hidden');
+      });
+      downloadAppModal.addEventListener('click', (e) => {
+        if (e.target === downloadAppModal) downloadAppModal.classList.add('hidden');
+      });
+    }
 
     // Initial render
     renderHomeStatsAndRecent();
