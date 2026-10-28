@@ -109,21 +109,23 @@ flowchart TD
 ### 1. LSPR Differential Densitometry ($A_{\text{Green}} - A_{\text{Red}}$)
 Colloidal gold nanoparticles demonstrate localized surface plasmon resonance (LSPR) resulting in strong optical absorbance in the green spectrum ($\approx 530\text{ nm}$) while transmitting/scattering red light ($\approx 650\text{ nm}$). 
 
-In optical densitometry, raw pixel intensity $\bar{I}$ measures transmittance, so optical absorbance is defined as $A = 255 - \bar{I}$. RapidQuant measures the differential absorbance ($A_{\text{Green}} - A_{\text{Red}}$):
+In optical densitometry, raw pixel intensity $I$ measures transmittance, so optical absorbance is defined as $A = 255 - I$. RapidQuant measures the differential absorbance ($A_{\text{Green}} - A_{\text{Red}}$):
 
-$$\Delta A(y) = \max\Big(0,\, A_{\text{Green}}(y) - A_{\text{Red}}(y)\Big) = \max\Big(0,\, \bar{I}_{\text{Red}}(y) - \bar{I}_{\text{Green}}(y)\Big)$$
+$$\Delta A(y) = \max(0, A_{\text{Green}}(y) - A_{\text{Red}}(y)) = \max(0, I_{\text{Red}}(y) - I_{\text{Green}}(y))$$
 
-* **Green Absorbance**: $A_{\text{Green}}(y) = 255 - \bar{I}_{\text{Green}}(y)$ *(High on ruby-red gold bands)*
-* **Red Absorbance**: $A_{\text{Red}}(y) = 255 - \bar{I}_{\text{Red}}(y)$ *(Low on ruby-red gold bands)*
-* **Algebraic Identity**: Subtracting red absorbance from green absorbance algebraically simplifies to raw ($\bar{I}_{\text{Red}} - \bar{I}_{\text{Green}}$), yielding a clean positive analytical peak.
+* **Green Absorbance**: $A_{\text{Green}}(y) = 255 - I_{\text{Green}}(y)$ *(High on ruby-red gold bands)*
+* **Red Absorbance**: $A_{\text{Red}}(y) = 255 - I_{\text{Red}}(y)$ *(Low on ruby-red gold bands)*
+* **Algebraic Identity**: Subtracting red absorbance from green absorbance algebraically simplifies to raw **Red − Green**:
+  $$\Delta A(y) = (255 - I_{\text{Green}}(y)) - (255 - I_{\text{Red}}(y)) = I_{\text{Red}}(y) - I_{\text{Green}}(y)$$
+  This produces a clean, positive analytical peak directly over the reaction band.
 
 ### 2. Adaptive Morphological Baseline
 To remove membrane wetting gradients, non-specific binding stains, and ambient vignetting without flattening high-frequency reaction bands, RapidQuant implements a 1D morphological grey opening with structuring element radius $R = 35\text{ px}$:
 
 1. **Erosion**: $E(i) = \min_{j \in [i-R, i+R]} \text{Signal}[j]$
 2. **Dilation**: $D(i) = \max_{j \in [i-R, i+R]} E[j]$
-3. **Continuum Envelope**: $\text{Baseline}[i] = \min(D(i),\, \text{Signal}[i])$
-4. **Net Signal**: $\text{NetSignal}[i] = \max(0,\, \text{Signal}[i] - \text{Baseline}[i])$
+3. **Continuum Envelope**: $\text{Baseline}[i] = \min(D(i), \text{Signal}[i])$
+4. **Net Signal**: $\text{NetSignal}[i] = \max(0, \text{Signal}[i] - \text{Baseline}[i])$
 
 ### 3. Noise Gating & 5% Apex Integration
 * **Noise Rejection**: Requires peak apex height $\ge 5.0\text{ a.u.}$ and saddle delta $\ge 2.5\text{ a.u.}$, otherwise strictly forcing $T = 0.0000$ (True blank confirmed).
