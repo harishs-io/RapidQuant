@@ -147,10 +147,16 @@ RapidQuant converts the analytical optical ratio $y = \text{AUC}_T / \text{AUC}_
 #### Mathematical Models
 
 * **Forward Curve (Dose-Response)**:
-  $$y = d + \frac{a - d}{1 + \left(\frac{x}{c}\right)^b}$$
+
+$$
+y = d + \frac{a - d}{1 + \left(\frac{x}{c}\right)^b}
+$$
 
 * **Inverse Calibration (Sample Quantification)**:
-  $$x = c \cdot \left(\frac{a - d}{y - d} - 1\right)^{1/b}$$
+
+$$
+x = c \cdot \left(\frac{a - d}{y - d} - 1\right)^{1/b}
+$$
 
 #### Parameters Overview
 
@@ -169,17 +175,26 @@ RapidQuant converts the analytical optical ratio $y = \text{AUC}_T / \text{AUC}_
 
 RapidQuant determines the clinical Limit of Detection (LoD) in strict accordance with the **CLSI EP17-A2** bioanalytical guidelines:
 
-1. **Limit of Blank ($\text{LoB}$)**  
-   The highest optical signal expected from a blank sample with 95% confidence ($\alpha = 0.05$):
-   $$\text{LoB} = \mu_{\text{blank}} + 1.645 \cdot \sigma_{\text{blank}} = 0.0000$$
+**Step 1: Limit of Blank (LoB)**  
+Highest optical signal expected from a blank sample with 95% confidence ($\alpha = 0.05$):
 
-2. **Limit of Detection Optical Signal ($\text{LoD}_{\text{signal}}$)**  
-   The lowest detectable optical ratio distinguishable from blank at a 95% detection rate ($\beta = 0.05$), with low-concentration variance $\sigma_{\text{low}} = 0.020$:
-   $$\text{LoD}_{\text{signal}} = \text{LoB} + 1.645 \cdot \sigma_{\text{low}} = 0 + (1.645 \cdot 0.020) = 0.0329$$
+$$
+\text{LoB} = \mu_{\text{blank}} + 1.645 \cdot \sigma_{\text{blank}} = 0.0000
+$$
 
-3. **Limit of Detection Concentration ($\text{LoD}_{\text{conc}}$)**  
-   Converted back into physical concentration ($\text{ng/mL}$) via the inverse 4PL equation:
-   $$\text{LoD}_{\text{conc}} = c \cdot \left(\frac{a - d}{\text{LoD}_{\text{signal}} - d} - 1\right)^{1/b} = 0.0581 \cdot \left(\frac{0 - 0.9722}{0.0329 - 0.9722} - 1\right)^{1/5} = 0.0297\text{ ng/mL}$$
+**Step 2: Optical Detection Threshold (LoD Signal)**  
+Lowest detectable optical ratio distinguishable from blank at a 95% detection rate ($\beta = 0.05$), with low-concentration repeatability standard deviation $\sigma = 0.020$:
+
+$$
+\text{LoD}_{\text{signal}} = \text{LoB} + 1.645 \cdot \sigma = 0 + (1.645 \cdot 0.020) = 0.0329
+$$
+
+**Step 3: Quantitative Limit of Detection Concentration (LoD Concentration)**  
+Converted back into physical concentration ($\text{ng/mL}$) via the inverse 4PL equation:
+
+$$
+\text{LoD}_{\text{conc}} = c \cdot \left(\frac{a - d}{\text{LoD}_{\text{signal}} - d} - 1\right)^{1/b} = 0.0581 \cdot \left(\frac{0 - 0.9722}{0.0329 - 0.9722} - 1\right)^{1/5} = 0.0297\text{ ng/mL}
+$$
 
 #### Clinical Interpretation Rule
 * **$y < 0.0329$** ($x < 0.0297\text{ ng/mL}$): **Negative / Below LoD** — Sample has no detectable analyte or falls below the reliable quantification threshold.
