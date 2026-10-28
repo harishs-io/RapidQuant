@@ -121,9 +121,9 @@ To remove membrane wetting gradients, non-specific binding stains, and ambient v
 
 ### 3. Noise Gating & 5% Apex Integration
 * **Noise Rejection**: Requires peak apex height $\ge 5.0\text{ a.u.}$ and saddle delta $\ge 2.5\text{ a.u.}$, otherwise strictly forcing $T = 0.0000$ (True blank confirmed).
-* **Boundary Scanning**: Scans laterally until the optical peak falls below $5\%$ of the apex height.
+* **Boundary Scanning**: Scans laterally until the optical peak falls below 5% of the apex height.
 * **Trapezoidal Integration**:
-  $$\text{AUC} = \sum_{i} \frac{y_i + y_{i+1}}{2} \cdot dx, \quad \text{where } dx = \frac{1000}{\text{membrane\_height}}$$
+  $$\text{AUC} = \sum_{i} \frac{y_i + y_{i+1}}{2} \cdot dx, \quad \text{where } dx = \frac{1000}{H_{\text{membrane}}}$$
 
 ### 4. 4-Parameter Logistic (4PL) Inverse Calibration
 Solves the dynamic concentration $x$ from the analytical ratio $y = \text{AUC}_T / \text{AUC}_C$:
