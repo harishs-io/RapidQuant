@@ -5227,6 +5227,276 @@
       showView('results');
     });
 
+    // Standalone High-DPI Publication Chromatogram Generator
+    function createChromatogramPlotDataUrl(strip, exp) {
+      try {
+        const cCanvas = document.createElement("canvas");
+        const dpr = 2.0;
+        cCanvas.width = Math.round(1100 * dpr);
+        cCanvas.height = Math.round(540 * dpr);
+        const ctx = cCanvas.getContext("2d");
+        ctx.scale(dpr, dpr);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, 1100, 540);
+
+        const unit = (strip && strip.assignedUnit) || (exp && exp.unit) || 'ng/mL';
+        const concVal = (strip && strip.calculatedConc != null) ? strip.calculatedConc : ((strip && strip.assignedConc != null) ? strip.assignedConc : 0);
+        const tcRatio = (strip && typeof strip.tcRatio === 'number') ? strip.tcRatio : parseFloat((strip && strip.tcRatio) || 0);
+        const cArea = (strip && typeof strip.cArea === 'number') ? strip.cArea : parseFloat((strip && strip.cArea) || 350.0);
+        const tArea = (strip && typeof strip.tArea === 'number') ? strip.tArea : parseFloat((strip && strip.tArea) || (tcRatio * cArea));
+        const isNeg = (strip && strip.status === 'NEGATIVE') || tcRatio <= 0.0329;
+
+        // 1. Left Panel: LFIA Strip / Cassette Drawing
+        const stripDrawX = 115;
+        const stripDrawY = 55;
+        const stripDrawW = 42;
+        const stripDrawH = 370;
+
+        ctx.fillStyle = "#f8fafc";
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.roundRect(stripDrawX, stripDrawY, stripDrawW, stripDrawH, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        // Nitrocellulose window inside cassette
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(stripDrawX + 5, stripDrawY + 40, stripDrawW - 10, stripDrawH - 80);
+
+        // C Line on cassette (purple)
+        ctx.fillStyle = "#762a83";
+        ctx.fillRect(stripDrawX + 5, stripDrawY + 140, stripDrawW - 10, 5);
+
+        // T Line on cassette (blue/pink if present)
+        if (!isNeg && tArea > 0) {
+          const alpha = Math.min(1.0, Math.max(0.35, tcRatio));
+          ctx.fillStyle = `rgba(33, 102, 172, ${alpha})`;
+          ctx.fillRect(stripDrawX + 5, stripDrawY + 190, stripDrawW - 10, 5);
+        }
+
+        // Title above strip
+        ctx.fillStyle = "#000000";
+        ctx.font = "bold 13px 'Times New Roman', Times, serif";
+        ctx.textAlign = "center";
+        const titleText = `${concVal} ${unit}`;
+        ctx.fillText(titleText, stripDrawX + (stripDrawW / 2), stripDrawY - 12);
+
+        // Legend box under strip
+        const legX = 18;
+        const legY = 445;
+        const legW = 205;
+        const legH = !isNeg && tArea > 0 ? 76 : 56;
+        ctx.fillStyle = "#fafafa";
+        ctx.strokeStyle = "#d9d9d9";
+        ctx.lineWidth = 1.0;
+        ctx.strokeRect(legX, legY, legW, legH);
+
+        // Legend 1: AuNP Signal
+        ctx.strokeStyle = "#1b7837";
+        ctx.lineWidth = 2.0;
+        ctx.beginPath();
+        ctx.moveTo(legX + 8, legY + 18);
+        ctx.lineTo(legX + 26, legY + 18);
+        ctx.stroke();
+        ctx.fillStyle = "#000000";
+        ctx.font = "11px 'Times New Roman', Times, serif";
+        ctx.textAlign = "left";
+        ctx.fillText("AuNP Signal (G - R)", legX + 32, legY + 22);
+
+        // Legend 2: C Line
+        ctx.fillStyle = "rgba(175, 141, 195, 0.75)";
+        ctx.fillRect(legX + 8, legY + 32, 18, 12);
+        ctx.strokeStyle = "#762a83";
+        ctx.lineWidth = 1.0;
+        ctx.strokeRect(legX + 8, legY + 32, 18, 12);
+        ctx.fillStyle = "#000000";
+        ctx.fillText(`C Line (${cArea.toFixed(1)})`, legX + 32, legY + 42);
+
+        // Legend 3: T Line
+        if (!isNeg && tArea > 0) {
+          ctx.fillStyle = "rgba(146, 197, 222, 0.75)";
+          ctx.fillRect(legX + 8, legY + 52, 18, 12);
+          ctx.strokeStyle = "#2166ac";
+          ctx.strokeRect(legX + 8, legY + 52, 18, 12);
+          ctx.fillStyle = "#000000";
+          ctx.fillText(`T Line (${tArea.toFixed(1)})`, legX + 32, legY + 62);
+        }
+
+        // 2. Right Panel: Chromatogram Plot
+        const plotX = 265;
+        const plotY = 45;
+        const plotW = 1100 - plotX - 45;
+        const plotH = 410;
+
+        const maxPeak = Math.max(25.0, cArea / 3.8, (tArea / 3.8) * 1.2);
+        const yMax = Math.max(20.0, Math.ceil((maxPeak * 1.35) / 10) * 10);
+
+        const toScreenX = (px) => plotX + (px / 700.0) * plotW;
+        const toScreenY = (val) => plotY + plotH - ((val / yMax) * plotH);
+
+        // Outward ticks on Y axis
+        const yStep = yMax <= 40 ? 10 : 20;
+        for (let v = 0; v <= yMax; v += yStep) {
+          const sy = toScreenY(v);
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 1.1;
+          ctx.beginPath();
+          ctx.moveTo(plotX - 5, sy);
+          ctx.lineTo(plotX, sy);
+          ctx.stroke();
+
+          ctx.fillStyle = "#000000";
+          ctx.font = "11.5px 'Times New Roman', Times, serif";
+          ctx.textAlign = "right";
+          ctx.fillText(v.toString(), plotX - 8, sy + 4);
+        }
+
+        // Outward ticks on X axis (0 to 700)
+        for (let px = 0; px <= 700; px += 100) {
+          const sx = toScreenX(px);
+          ctx.strokeStyle = "#000000";
+          ctx.lineWidth = 1.1;
+          ctx.beginPath();
+          ctx.moveTo(sx, plotY + plotH);
+          ctx.lineTo(sx, plotY + plotH + 5);
+          ctx.stroke();
+
+          ctx.fillStyle = "#000000";
+          ctx.font = "11.5px 'Times New Roman', Times, serif";
+          ctx.textAlign = "center";
+          ctx.fillText(px.toString(), sx, plotY + plotH + 20);
+        }
+
+        // L-shaped axes
+        ctx.strokeStyle = "#000000";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(plotX, plotY);
+        ctx.lineTo(plotX, plotY + plotH);
+        ctx.lineTo(plotX + plotW, plotY + plotH);
+        ctx.stroke();
+
+        // Axis Titles
+        ctx.fillStyle = "#000000";
+        ctx.font = "bold 12.5px 'Times New Roman', Times, serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Migration Distance (pixels)", plotX + (plotW / 2), plotY + plotH + 42);
+
+        ctx.save();
+        ctx.translate(plotX - 44, plotY + (plotH / 2));
+        ctx.rotate(-Math.PI / 2);
+        ctx.fillText("Inverted Absorbance (a.u.)", 0, 0);
+        ctx.restore();
+
+        // Analytical peak models
+        const cCenter = 350;
+        const cSigma = 11;
+        const cHeight = Math.max(10, Math.min(yMax * 0.85, (cArea / 380) * (yMax * 0.75)));
+
+        const tCenter = 430;
+        const tSigma = 11;
+        const tHeight = isNeg ? 0 : Math.max(0, Math.min(yMax * 0.85, cHeight * tcRatio));
+
+        const getSignal = (x) => {
+          const gC = cHeight * Math.exp(-0.5 * Math.pow((x - cCenter) / cSigma, 2));
+          const gT = tHeight * Math.exp(-0.5 * Math.pow((x - tCenter) / tSigma, 2));
+          return gC + gT;
+        };
+
+        // Shade C Peak
+        ctx.fillStyle = "rgba(175, 141, 195, 0.55)";
+        ctx.beginPath();
+        ctx.moveTo(toScreenX(cCenter - 30), toScreenY(0));
+        for (let x = cCenter - 30; x <= cCenter + 30; x++) {
+          ctx.lineTo(toScreenX(x), toScreenY(getSignal(x)));
+        }
+        ctx.lineTo(toScreenX(cCenter + 30), toScreenY(0));
+        ctx.closePath();
+        ctx.fill();
+
+        // C Apex Label & Arrow
+        const cApexX = toScreenX(cCenter);
+        const cApexY = toScreenY(cHeight);
+        ctx.strokeStyle = "#762a83";
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(cApexX, cApexY - 32);
+        ctx.lineTo(cApexX, cApexY - 3);
+        ctx.stroke();
+
+        ctx.fillStyle = "#40004b";
+        ctx.font = "bold 11.5px 'Times New Roman', Times, serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Control Line", cApexX, cApexY - 38);
+
+        // Shade T Peak
+        if (!isNeg && tHeight > 1.0) {
+          ctx.fillStyle = "rgba(146, 197, 222, 0.55)";
+          ctx.beginPath();
+          ctx.moveTo(toScreenX(tCenter - 30), toScreenY(0));
+          for (let x = tCenter - 30; x <= tCenter + 30; x++) {
+            ctx.lineTo(toScreenX(x), toScreenY(getSignal(x)));
+          }
+          ctx.lineTo(toScreenX(tCenter + 30), toScreenY(0));
+          ctx.closePath();
+          ctx.fill();
+
+          // T Apex Label & Arrow
+          const tApexX = toScreenX(tCenter);
+          const tApexY = toScreenY(tHeight);
+          ctx.strokeStyle = "#2166ac";
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(tApexX, tApexY - 32);
+          ctx.lineTo(tApexX, tApexY - 3);
+          ctx.stroke();
+
+          ctx.fillStyle = "#053061";
+          ctx.font = "bold 11.5px 'Times New Roman', Times, serif";
+          ctx.textAlign = "center";
+          ctx.fillText("Test Line", tApexX, tApexY - 38);
+        }
+
+        // Draw Full Signal Curve
+        ctx.strokeStyle = "#1b7837";
+        ctx.lineWidth = 2.0;
+        ctx.beginPath();
+        for (let x = 0; x <= 700; x += 2) {
+          const sx = toScreenX(x);
+          const sy = toScreenY(getSignal(x));
+          if (x === 0) ctx.moveTo(sx, sy);
+          else ctx.lineTo(sx, sy);
+        }
+        ctx.stroke();
+
+        // Top-right T/C Ratio Badge
+        const badgeText = `T/C Ratio: ${tcRatio.toFixed(4)}`;
+        ctx.font = "bold 12.5px 'Times New Roman', Times, serif";
+        const bw = ctx.measureText(badgeText).width + 24;
+        const bx = plotX + plotW - bw - 15;
+        const by = plotY + 12;
+
+        ctx.fillStyle = "#f7f7f7";
+        ctx.strokeStyle = "#cccccc";
+        ctx.lineWidth = 1.0;
+        ctx.beginPath();
+        ctx.roundRect(bx, by, bw, 32, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#000000";
+        ctx.textAlign = "center";
+        ctx.fillText(badgeText, bx + (bw / 2), by + 20);
+
+        return cCanvas.toDataURL("image/png");
+      } catch (err) {
+        console.warn("createChromatogramPlotDataUrl error:", err);
+        return "";
+      }
+    }
+
     // --- View 5: Results View Presentation ---
     function displayResultsView(exp) {
       if (!exp) return;
@@ -5439,6 +5709,10 @@
       gallery.innerHTML = '';
 
       exp.strips.forEach((strip, idx) => {
+        if (!strip.publicationPlot || strip.publicationPlot === 'null' || strip.publicationPlot === 'undefined') {
+          strip.publicationPlot = createChromatogramPlotDataUrl(strip, exp);
+        }
+
         const card = document.createElement('div');
         card.className = 'bg-white border border-slate-200 rounded-3xl p-4 shadow-xs space-y-3';
 
@@ -5742,13 +6016,36 @@
     });
 
     function downloadImage(dataUrl, filename) {
-      if (!dataUrl) return;
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      if (!dataUrl || dataUrl === 'null' || dataUrl === 'undefined') {
+        showToast("No image available to download", "amber");
+        return;
+      }
+
+      // Android native direct save to Downloads
+      if (window.AndroidAssetBridge && typeof window.AndroidAssetBridge.saveFileDirect === 'function') {
+        const parts = dataUrl.split(',');
+        const b64 = parts.length > 1 ? parts[1] : parts[0];
+        const ok = window.AndroidAssetBridge.saveFileDirect(filename, b64, 'image/png');
+        if (ok) {
+          showToast(`💾 Saved ${filename} to Downloads`, 'teal');
+        } else {
+          showToast(`Could not save ${filename}`, 'rose');
+        }
+        return;
+      }
+
+      // Web browser / iOS fallback
+      try {
+        const a = document.createElement('a');
+        a.href = dataUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showToast(`Downloaded ${filename}`, 'teal');
+      } catch (e) {
+        if (typeof window.open === 'function') window.open(dataUrl, '_blank');
+      }
     }
 
     // --- View 6: In-App Archives & Storage View ---
@@ -5993,6 +6290,9 @@
       };
 
       exps = [demoExp];
+      demoExp.strips.forEach(s => {
+        s.publicationPlot = createChromatogramPlotDataUrl(s, demoExp);
+      });
       saveStoredExperiments(exps);
       renderHomeStatsAndRecent();
       return demoExp;
@@ -6252,6 +6552,7 @@
       const safeExpName = (exp.name || 'assay_01').replace(/[^a-zA-Z0-9_-]/g, '_');
       const ext = format === 'pdf_combined' ? '.pdf' : '.zip';
       const filename = `${safeExpName}_Report${ext}`;
+      const mimeType = format === 'pdf_combined' ? 'application/pdf' : 'application/zip';
 
       showAppLoader(`Packaging ${filename}...`);
 
@@ -6266,84 +6567,105 @@
 
         if (!blob) throw new Error("Failed to create export file data.");
 
-        let finalSavedLocation = localStorage.getItem('rapidquant_last_save_location') || 'Phone Downloads';
+        // Helper to convert blob to base64
+        const blobToBase64 = (b) => new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const res = reader.result || '';
+            const idx = res.indexOf(',');
+            resolve(idx >= 0 ? res.slice(idx + 1) : res);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(b);
+        });
 
-        if (isChoosingNewPlace) {
-          let saved = false;
+        // 1. Native Android Asset Bridge (Device Storage & Native Save As Picker)
+        if (window.AndroidAssetBridge) {
+          const b64Data = await blobToBase64(blob);
 
-          // 1. Native File System Access API (showSaveFilePicker)
-          if (typeof window.showSaveFilePicker === 'function') {
-            try {
-              const fileHandle = await window.showSaveFilePicker({
-                suggestedName: filename,
-                types: [{
-                  description: format === 'pdf_combined' ? 'PDF Report' : 'ZIP Archive',
-                  accept: format === 'pdf_combined' ? { 'application/pdf': ['.pdf'] } : { 'application/zip': ['.zip'] }
-                }]
-              });
-              if (fileHandle) {
-                const writable = await fileHandle.createWritable();
-                await writable.write(blob);
-                await writable.close();
-                saved = true;
-                finalSavedLocation = fileHandle.name || 'Device Storage';
-                localStorage.setItem('rapidquant_last_save_location', finalSavedLocation);
-              }
-            } catch (pickerErr) {
-              if (pickerErr.name === 'AbortError') {
-                return; // User cancelled picker
-              }
-              console.warn("showSaveFilePicker fallback:", pickerErr);
-            }
-          }
-
-          // 2. Web Share API (native share/save sheet on iOS / Android)
-          if (!saved && navigator.canShare && typeof navigator.share === 'function') {
-            try {
-              const file = new File([blob], filename, { type: blob.type });
-              if (navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                  files: [file],
-                  title: filename,
-                  text: `RapidQuant analytical report: ${filename}`
+          if (isChoosingNewPlace && typeof window.AndroidAssetBridge.saveFileWithPicker === 'function') {
+            window.onNativeFileSaved = async function(success, loc) {
+              closeExportDialog();
+              if (success) {
+                const finalLoc = loc || 'Phone Storage';
+                localStorage.setItem('rapidquant_last_save_location', finalLoc);
+                await showThemedAlert({
+                  title: "Export Complete! 💾",
+                  message: `Saved '${filename}' successfully.`,
+                  detailText: `📁 Location: ${finalLoc}\n✓ All CSV tables, raw JSON data, standard curve, and strip chromatograms saved.`,
+                  type: "success",
+                  buttonText: "OK, Done"
                 });
-                saved = true;
-                finalSavedLocation = 'Phone Files / Saved Location';
-                localStorage.setItem('rapidquant_last_save_location', finalSavedLocation);
+              } else if (loc !== 'cancelled') {
+                showToast("Could not save to selected location.", "rose");
               }
-            } catch (shareErr) {
-              if (shareErr.name === 'AbortError') return;
+            };
+            window.AndroidAssetBridge.saveFileWithPicker(filename, b64Data, mimeType);
+            return;
+          } else if (typeof window.AndroidAssetBridge.saveFileDirect === 'function') {
+            const ok = window.AndroidAssetBridge.saveFileDirect(filename, b64Data, mimeType);
+            closeExportDialog();
+            if (ok) {
+              const finalLoc = localStorage.getItem('rapidquant_last_save_location') || 'Phone Downloads';
+              await showThemedAlert({
+                title: "Export Complete! 💾",
+                message: `Saved '${filename}' to Phone Downloads.`,
+                detailText: `📁 Location: ${finalLoc}\n✓ All CSV tables, raw JSON data, standard curve, and strip chromatograms saved.`,
+                type: "success",
+                buttonText: "OK, Done"
+              });
+            } else {
+              showToast("Failed to write file to storage.", "rose");
             }
+            return;
           }
-
-          // 3. Fallback: Browser download trigger
-          if (!saved) {
-            const blobUrl = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = blobUrl;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-            finalSavedLocation = 'Phone Downloads';
-            localStorage.setItem('rapidquant_last_save_location', finalSavedLocation);
-          }
-
-        } else {
-          // Save directly to stored location via browser download
-          const blobUrl = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = blobUrl;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
         }
 
-        closeExportDialog();
+        // 2. Desktop Chrome / Edge Native Save File Picker
+        let finalSavedLocation = localStorage.getItem('rapidquant_last_save_location') || 'Phone Downloads';
 
+        if (isChoosingNewPlace && typeof window.showSaveFilePicker === 'function') {
+          try {
+            const fileHandle = await window.showSaveFilePicker({
+              suggestedName: filename,
+              types: [{
+                description: format === 'pdf_combined' ? 'PDF Report' : 'ZIP Archive',
+                accept: format === 'pdf_combined' ? { 'application/pdf': ['.pdf'] } : { 'application/zip': ['.zip'] }
+              }]
+            });
+            if (fileHandle) {
+              const writable = await fileHandle.createWritable();
+              await writable.write(blob);
+              await writable.close();
+              finalSavedLocation = fileHandle.name || 'Device Storage';
+              localStorage.setItem('rapidquant_last_save_location', finalSavedLocation);
+              closeExportDialog();
+              await showThemedAlert({
+                title: "Export Complete! 💾",
+                message: `Saved '${filename}' successfully.`,
+                detailText: `📁 Location: ${finalSavedLocation}\n✓ All CSV tables, raw JSON data, standard curve, and strip chromatograms saved.`,
+                type: "success",
+                buttonText: "OK, Done"
+              });
+              return;
+            }
+          } catch (pickerErr) {
+            if (pickerErr.name === 'AbortError') return;
+            console.warn("showSaveFilePicker fallback:", pickerErr);
+          }
+        }
+
+        // 3. Fallback: Browser Download Trigger
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1500);
+
+        closeExportDialog();
         await showThemedAlert({
           title: "Export Complete! 💾",
           message: `Saved '${filename}' successfully.`,
