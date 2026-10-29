@@ -65,7 +65,7 @@
 <body class="text-slate-900 min-h-screen">
 
   <!-- Hidden Native Camera & Gallery Inputs -->
-  <input type="file" id="native-camera-input" accept="image/*,.jpg,.jpeg,.png,.tif,.tiff" capture="environment" class="hidden">
+  <input type="file" id="native-camera-input" accept="image/*" capture="environment" class="hidden">
   <input type="file" id="gallery-file-input" accept="image/*,.jpg,.jpeg,.png,.tif,.tiff,.bmp,.webp" multiple class="hidden">
   <input type="file" id="folder-file-input" webkitdirectory directory multiple class="hidden">
 
@@ -161,7 +161,7 @@
         <div class="min-w-0">
           <div class="text-[11px] font-bold text-teal-100 flex items-center gap-1.5 truncate">
             <span>New Analysis Engine Available</span>
-            <span id="ota-version-tag" class="px-1.5 py-0.2 rounded-md bg-teal-500/30 text-teal-200 text-[10px] font-mono font-bold">v2.1.0</span>
+            <span id="ota-version-tag" class="px-1.5 py-0.2 rounded-md bg-teal-500/30 text-teal-200 text-[10px] font-mono font-bold">v2.1.1</span>
           </div>
           <div id="ota-changelog-text" class="text-[9.5px] text-teal-200/80 truncate">GitHub cloud update ready</div>
         </div>
@@ -615,8 +615,8 @@
             </div>
           </div>
 
-          <div class="absolute bottom-32 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-semibold text-slate-700 border border-slate-200 shadow-sm">
-            <span class="text-teal-600 font-bold">↑</span> Flow Direction (Sample → Pad)
+          <div class="absolute bottom-32 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-semibold text-slate-700 border border-slate-200 shadow-sm text-center">
+            <span class="text-teal-600 font-bold">📏</span> Hold ~12–15 cm away • Tap screen to focus
           </div>
         </div>
 
@@ -625,12 +625,14 @@
           <button id="camera-close-btn" class="px-3 py-1 rounded-full bg-white/90 text-xs font-bold text-slate-800 shadow-sm hover:bg-white active:scale-95 transition">
             ✕ Cancel
           </button>
-          <span class="text-[11px] font-bold text-white bg-slate-800/80 px-3 py-1 rounded-full border border-white/10">
-            CASSETTE SCANNER
-          </span>
-          <button id="camera-flip-btn" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center text-sm transition" title="Flip Camera">
-            🔄
-          </button>
+          <div class="flex items-center gap-2">
+            <button id="camera-torch-btn" type="button" class="px-2.5 py-1 rounded-full bg-white/20 hover:bg-white/30 text-white text-[11px] font-bold flex items-center gap-1 transition" title="Toggle Flashlight Torch">
+              <span>💡</span> Torch
+            </button>
+            <button id="camera-flip-btn" type="button" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center text-sm transition" title="Flip Camera">
+              🔄
+            </button>
+          </div>
         </div>
 
         <!-- Bottom Shutter Button -->
@@ -2108,8 +2110,8 @@
         const constraints = {
           video: {
             facingMode: { ideal: cameraFacingMode },
-            width: { ideal: 1920, min: 640 },
-            height: { ideal: 1080, min: 480 }
+            width: { ideal: 3840, min: 1280 },
+            height: { ideal: 2160, min: 720 }
           },
           audio: false
         };
@@ -2120,6 +2122,27 @@
         cameraVideoEl.classList.remove('hidden');
         if (camPlaceholderEl) camPlaceholderEl.classList.add('hidden');
         await cameraVideoEl.play();
+
+        // Apply hardware autofocus & exposure constraints if supported
+        const videoTrack = stream.getVideoTracks()[0];
+        if (videoTrack && typeof videoTrack.applyConstraints === 'function') {
+          try {
+            const caps = videoTrack.getCapabilities ? videoTrack.getCapabilities() : {};
+            const adv = {};
+            if (caps.focusMode && caps.focusMode.includes('continuous')) {
+              adv.focusMode = 'continuous';
+            }
+            if (caps.exposureMode && caps.exposureMode.includes('continuous')) {
+              adv.exposureMode = 'continuous';
+            }
+            if (Object.keys(adv).length > 0) {
+              await videoTrack.applyConstraints({ advanced: [adv] });
+            }
+          } catch (e) {
+            console.warn('Advanced camera constraints not supported:', e);
+          }
+        }
+
         showView('camera');
       } catch (err) {
         console.error('Camera initialization error:', err);
@@ -2142,6 +2165,59 @@
       cameraCloseBtn.addEventListener('click', () => {
         stopCameraStream();
         showView('loader');
+      });
+    }
+
+    // Torch / Flashlight Toggle
+    let torchActive = false;
+    const cameraTorchBtn = document.getElementById('camera-torch-btn');
+    if (cameraTorchBtn) {
+      cameraTorchBtn.addEventListener('click', async () => {
+        if (!cameraStream) return;
+        const track = cameraStream.getVideoTracks()[0];
+        if (!track || typeof track.applyConstraints !== 'function') {
+          showToast('Flashlight torch is not supported on this device', 'amber');
+          return;
+        }
+        try {
+          const caps = track.getCapabilities ? track.getCapabilities() : {};
+          if (!caps.torch) {
+            showToast('Flashlight torch is not supported by this camera hardware', 'amber');
+            return;
+          }
+          torchActive = !torchActive;
+          await track.applyConstraints({
+            advanced: [{ torch: torchActive }]
+          });
+          cameraTorchBtn.classList.toggle('bg-amber-400', torchActive);
+          cameraTorchBtn.classList.toggle('text-slate-900', torchActive);
+          showToast(torchActive ? '💡 Flashlight torch ON' : 'Flashlight torch OFF', 'teal');
+        } catch(err) {
+          showToast('Unable to toggle torch flashlight', 'amber');
+        }
+      });
+    }
+
+    // Tap-to-Focus on Viewfinder
+    if (cameraVideoEl) {
+      cameraVideoEl.addEventListener('click', async (e) => {
+        if (!cameraStream) return;
+        const track = cameraStream.getVideoTracks()[0];
+        if (!track || typeof track.applyConstraints !== 'function') return;
+        try {
+          const rect = cameraVideoEl.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          const caps = track.getCapabilities ? track.getCapabilities() : {};
+          if (caps.pointsOfInterest) {
+            await track.applyConstraints({
+              advanced: [{ pointsOfInterest: [{ x, y }] }]
+            });
+            showToast('🎯 Focus locked on selected point', 'teal');
+          }
+        } catch(err) {
+          console.warn('Tap-to-focus error:', err);
+        }
       });
     }
 
@@ -2184,11 +2260,30 @@
     const folderFileInput = document.getElementById('folder-file-input');
 
     function triggerNativeCameraCapture() {
+      // 1. Direct Android Native Bridge Camera Launch (Bypasses WebView file chooser)
+      if (window.AndroidAssetBridge && typeof window.AndroidAssetBridge.launchNativeCamera === 'function') {
+        window.AndroidAssetBridge.launchNativeCamera();
+        return;
+      }
+
+      // 2. Older APK detection
+      if (window.AndroidAssetBridge && typeof window.AndroidAssetBridge.launchNativeCamera !== 'function') {
+        showToast('Tip: Install APK v2.1.1 to open camera app directly, or tap "Open Live Viewfinder Reticle" below.', 'amber');
+      }
+
+      // 3. Native Camera File Input (triggers MediaStore.ACTION_IMAGE_CAPTURE in v2.1.1 APK or opens camera in mobile browsers)
       if (nativeCamInput) {
         nativeCamInput.value = '';
         nativeCamInput.click();
       }
     }
+
+    // Android Native Bridge Camera Callback
+    window.onNativeCameraPhotoCaptured = function(dataUrl) {
+      if (dataUrl) {
+        openCamPreviewUploadModal(null, dataUrl);
+      }
+    };
 
     // Trigger Phone Native Camera (Primary Camera Action)
     document.getElementById('source-camera-btn').addEventListener('click', () => {
@@ -5324,7 +5419,7 @@
     // =========================================================================
     // OVER-THE-AIR (OTA) AUTO-UPDATE CONTROLLER (GitHub Pages Cloud Engine)
     // =========================================================================
-    const RAPIDQUANT_LOCAL_VERSION = '2.1.0';
+    const RAPIDQUANT_LOCAL_VERSION = '2.1.1';
     const GITHUB_OTA_ENDPOINT = 'https://harishs-io.github.io/RapidQuant/version.json';
     const GITHUB_OTA_HTML_URL = 'https://harishs-io.github.io/RapidQuant/index.html';
 

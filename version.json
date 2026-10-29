@@ -1,9 +1,8 @@
 {
   "appName": "RapidQuant",
-  "version": "2.1.0",
-  "build": 2,
+  "version": "2.1.1",
+  "build": 3,
   "releaseDate": "2026-10-29",
   "otaUrl": "https://harishs-io.github.io/RapidQuant/",
-  "changelog": "Native camera integration with hardware autofocus, macro lens support, exposure controls, and progressive multi-strip LoD capture preview dialog."
+  "changelog": "Direct hardware camera app launch with MediaStore capture & Android bridge, FileProvider integration, live viewfinder torch flashlight & tap-to-focus."
 }
-
