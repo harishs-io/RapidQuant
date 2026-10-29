@@ -217,6 +217,45 @@
       </div>
     </div>
 
+    <!-- DUAL-TRACK: NATIVE ANDROID APK UPDATE REQUIRED MODAL -->
+    <div id="native-apk-update-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl p-6 max-w-xs w-full shadow-2xl space-y-4 border border-slate-100 text-center animate-in fade-in zoom-in-95 duration-150">
+        <div class="w-16 h-16 rounded-3xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-3xl mx-auto shadow-inner text-emerald-600">
+          🤖
+        </div>
+        <div>
+          <h3 class="text-base font-bold text-slate-900 leading-tight">Android App Update Available</h3>
+          <p class="text-xs text-slate-500 mt-1">Upgrade to RapidQuant <span id="native-apk-modal-version" class="font-bold text-emerald-700">v2.1.4</span></p>
+        </div>
+
+        <div class="p-3 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl text-left space-y-1.5">
+          <div class="text-[11px] font-bold text-emerald-950 flex items-center gap-1.5">
+            <span>✨</span> What's New in this System Update:
+          </div>
+          <ul class="text-[10px] text-emerald-900/90 space-y-1 list-disc pl-3.5 leading-relaxed">
+            <li>Direct Samsung & device camera hardware launch</li>
+            <li>Hardware lens autofocus, tap-to-focus & macro mode</li>
+            <li>Over-the-air status bar & auto-restart engine</li>
+          </ul>
+        </div>
+
+        <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200/70 text-[10px] text-slate-500 leading-relaxed text-left flex items-start gap-1.5">
+          <span class="text-xs">ℹ️</span>
+          <span><strong>No data will be lost:</strong> Installing this update safely overwrites the old app and preserves all saved experiments.</span>
+        </div>
+
+        <div class="space-y-2 pt-1">
+          <a id="native-apk-download-btn" href="https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk" download="RapidQuant.apk" target="_blank"
+            class="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition text-center cursor-pointer">
+            <span>⬇️</span> Download & Install Update (43 MB)
+          </a>
+          <button id="native-apk-dismiss-btn" type="button" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition cursor-pointer">
+            Remind Me Later
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- MAIN APP VIEW CONTAINER (Scrollable) -->
     <div id="app-view-container" class="flex-1 overflow-y-auto relative bg-slate-50">
 
@@ -963,18 +1002,19 @@
       <div>
         <h3 class="text-sm font-bold text-slate-900">Inbuilt Device Camera</h3>
         <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
-          Your installed app wrapper is <strong class="text-slate-800">v2.0.0</strong>, which routes camera clicks to the gallery. To open your <strong class="text-teal-700">Samsung Camera app directly</strong>, update the app package or open in Chrome:
+          Your installed app wrapper is <strong class="text-slate-800">v2.0.0</strong>, which routes camera clicks to the gallery. To open your <strong class="text-teal-700">Samsung Camera app directly</strong>, update the app package:
         </p>
+      </div>
+
+      <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200/70 text-[10px] text-slate-500 leading-relaxed text-left flex items-start gap-1.5">
+        <span class="text-xs">ℹ️</span>
+        <span><strong>No data will be lost:</strong> Installing this update safely overwrites the old app and preserves all saved experiments.</span>
       </div>
 
       <div class="space-y-2 pt-1">
         <a href="https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk" download="RapidQuant.apk" target="_blank"
           class="w-full py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition text-center">
-          <span>⬇️</span> Download & Install APK (v2.1.4)
-        </a>
-        <a href="https://harishs-io.github.io/RapidQuant/" target="_blank"
-          class="w-full py-2.5 px-3 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition text-center">
-          <span>🌐</span> Open in Chrome (Camera Works Now)
+          <span>⬇️</span> Download & Install Update (43 MB)
         </a>
         <button id="camera-apk-fallback-picker-btn" type="button"
           class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition cursor-pointer">
@@ -2369,7 +2409,7 @@
 
       // 2. Older APK detection (v2.0.0 where Android WebView redirects file input to gallery)
       if (window.AndroidAssetBridge && typeof window.AndroidAssetBridge.launchNativeCamera !== 'function') {
-        const apkModal = document.getElementById('camera-apk-update-modal');
+        const apkModal = document.getElementById('native-apk-update-modal') || document.getElementById('camera-apk-update-modal');
         if (apkModal) {
           apkModal.classList.remove('hidden');
           return;
@@ -5553,6 +5593,32 @@
       return 0;
     }
 
+    function getInstalledApkVersion() {
+      if (window.AndroidAssetBridge) {
+        if (typeof window.AndroidAssetBridge.getAppVersion === 'function') {
+          try {
+            return window.AndroidAssetBridge.getAppVersion();
+          } catch (e) {
+            return '2.1.4';
+          }
+        }
+        // Native bridge exists but getAppVersion does not -> installed APK is v2.0.0
+        return '2.0.0';
+      }
+      return null;
+    }
+
+    function showNativeApkUpdateModal(minVersion) {
+      const apkModal = document.getElementById('native-apk-update-modal');
+      const apkVerSpan = document.getElementById('native-apk-modal-version');
+      if (apkVerSpan && minVersion) {
+        apkVerSpan.textContent = `v${minVersion}`;
+      }
+      if (apkModal) {
+        apkModal.classList.remove('hidden');
+      }
+    }
+
     async function installOtaUpdateWithProgress(targetVersion, changelog, forceCheck = false) {
       const modal = document.getElementById('ota-install-modal');
       const icon = document.getElementById('ota-modal-icon');
@@ -5586,6 +5652,14 @@
           const manifest = await vRes.json();
           versionToInstall = manifest.version;
           if (verSpan) verSpan.textContent = `v${versionToInstall || RAPIDQUANT_LOCAL_VERSION}`;
+
+          // Dual-Track: If native Android APK upgrade is required, open the APK modal
+          const installedApk = getInstalledApkVersion();
+          if (installedApk && manifest.minApkVersion && compareVersions(manifest.minApkVersion, installedApk) > 0) {
+            if (modal) modal.classList.add('hidden');
+            showNativeApkUpdateModal(manifest.minApkVersion);
+            return;
+          }
 
           if (!forceCheck && compareVersions(versionToInstall, RAPIDQUANT_LOCAL_VERSION) <= 0) {
             setProgress(100, `App is already up-to-date (v${RAPIDQUANT_LOCAL_VERSION})`);
@@ -5671,6 +5745,15 @@
         if (!res.ok) return;
         const manifest = await res.json();
 
+        // 1. Dual-Track Check: Native Android APK Update Required
+        const installedApk = getInstalledApkVersion();
+        if (installedApk && manifest.minApkVersion && compareVersions(manifest.minApkVersion, installedApk) > 0) {
+          console.log(`[RapidQuant Updates] Native APK upgrade required: v${manifest.minApkVersion} (installed: v${installedApk})`);
+          showNativeApkUpdateModal(manifest.minApkVersion);
+          return;
+        }
+
+        // 2. Track 1: Routine OTA Web/Algorithm Update
         if (manifest.version && compareVersions(manifest.version, RAPIDQUANT_LOCAL_VERSION) > 0) {
           console.log(`[RapidQuant OTA] Newer version found: v${manifest.version} (current: v${RAPIDQUANT_LOCAL_VERSION})`);
 
@@ -5711,6 +5794,15 @@
     if (otaModalCloseBtn) {
       otaModalCloseBtn.addEventListener('click', () => {
         const modal = document.getElementById('ota-install-modal');
+        if (modal) modal.classList.add('hidden');
+      });
+    }
+
+    // Connect dismiss button on native APK update modal
+    const nativeApkDismissBtn = document.getElementById('native-apk-dismiss-btn');
+    if (nativeApkDismissBtn) {
+      nativeApkDismissBtn.addEventListener('click', () => {
+        const modal = document.getElementById('native-apk-update-modal');
         if (modal) modal.classList.add('hidden');
       });
     }

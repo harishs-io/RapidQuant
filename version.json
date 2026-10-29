@@ -2,7 +2,9 @@
   "appName": "RapidQuant",
   "version": "2.1.4",
   "build": 6,
+  "minApkVersion": "2.1.4",
+  "apkUrl": "https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk",
   "releaseDate": "2026-10-29",
   "otaUrl": "https://harishs-io.github.io/RapidQuant/",
-  "changelog": "Direct Samsung Camera launcher, smart APK updater dialog, live status bar progress on Home screen & Settings."
+  "changelog": "Dual-track update system: in-app OTA progress bar for analytical models, automatic APK update dialog when native hardware drivers require upgrade."
 }

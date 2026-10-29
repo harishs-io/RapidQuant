@@ -11,9 +11,9 @@
 
 <p align="center">
   <a href="https://harishs-io.github.io/RapidQuant/"><img src="https://img.shields.io/badge/Live%20PWA-Launch%20App-00D2B4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live App"></a>
-  <a href="https://harishs-io.github.io/RapidQuant/RapidQuant.apk"><img src="https://img.shields.io/badge/Android%20APK-Download%20(43%20MB)-34D399?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK"></a>
+  <a href="https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk"><img src="https://img.shields.io/badge/Android%20APK-v2.1.4%20(43%20MB)-34D399?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK"></a>
   <a href="https://harishs-io.github.io/RapidQuant/RapidQuant.ipa"><img src="https://img.shields.io/badge/iOS%20IPA-Download%20(42%20MB)-38BDF8?style=for-the-badge&logo=apple&logoColor=white" alt="Download iOS IPA"></a>
-  <a href="https://github.com/harishs-io/RapidQuant"><img src="https://img.shields.io/badge/Version-2.0.0-blue?style=for-the-badge" alt="Version 2.0.0"></a>
+  <a href="https://github.com/harishs-io/RapidQuant"><img src="https://img.shields.io/badge/Version-2.1.4-blue?style=for-the-badge" alt="Version 2.1.4"></a>
   <a href="#license"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License MIT"></a>
 </p>
 
@@ -56,12 +56,16 @@ This classical routine requires hours to days per calibration series, introduces
 ### 🤖 1. Android Installation (Direct APK)
 For any Android smartphone, tablet, or clinical field device (Samsung, Google Pixel, OnePlus, Xiaomi, etc.):
 
-- **Direct Download**: [**`RapidQuant.apk`**](RapidQuant.apk) *(43 MB, API level 24 to 35)*
+- **Direct Download**: [**`RapidQuant.apk` (v2.1.4)**](https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk) *(43 MB, Build 6, Android 7.0 to 15+)*
+- **What's New in v2.1.4**:
+  * 📸 **Direct Samsung & Device Camera Launch**: Native `FileProvider` and `MediaStore.ACTION_IMAGE_CAPTURE` intent directly launches your phone's native camera hardware with tap-to-focus and macro mode.
+  * 🔄 **Dual-Track Update System**: In-app OTA progress bar (0% ➔ 100%) for analytical models, plus automated system prompts when a native APK upgrade is available.
+  * 🛡️ **Zero Data Loss Upgrades**: Installing `RapidQuant.apk` safely overwrites earlier builds in-place while keeping 100% of your saved strip records and calibration history intact.
 - **Installation Steps**:
   1. Download `RapidQuant.apk` directly on your Android phone.
-  2. Tap the downloaded file in your browser downloads or file manager.
+  2. Tap the downloaded file in your browser downloads or file notification.
   3. If prompted, allow *"Install unknown apps"* for your browser.
-  4. Tap **Install** ➔ Open **RapidQuant**!
+  4. Tap **Install** (or **Update**) ➔ Open **RapidQuant**!
   - Fully offline point-of-care bioanalytical platform with live camera alignment and hardware-accelerated local inference.
 
 ---
@@ -214,27 +218,32 @@ $$
 
 ---
 
-## 🔄 Over-the-Air (OTA) Instant Updates
+## 🔄 Dual-Track Update System
 
-RapidQuant features a hybrid OTA deployment architecture powered by GitHub Pages:
+RapidQuant utilizes an intelligent dual-track distribution and update architecture:
 
 ```
-[Developer updates code] 
-         │
-         ▼
-[git push origin main] ──► [GitHub Pages CDN]
-                                  │
-                                  ▼
-           ┌──────────────────────────────────────────────┐
-           │        User Device (Android / iOS / Web)     │
-           │                                              │
-           │ 1. Non-blocking silent version check         │
-           │ 2. Background download of updated index.html │
-           │ 3. Persistent cache in app storage (ota_web) │
-           │ 4. Instant one-click update banner           │
-           │ 5. 100% offline functionality preserved!     │
-           └──────────────────────────────────────────────┘
+[Developer pushes git commit] 
+             │
+             ├──► Analytical / Math / UI update ────► Track 1: OTA Web Update (0% -> 100% Progress Bar)
+             │                                         (Silent background download, auto-restart, no APK needed)
+             │
+             └──► Native Hardware / Camera change ──► Track 2: Native APK Update Dialog
+                                                       (In-app popup prompt, 1-tap download, overwrites safely)
 ```
+
+### Track 1: Over-the-Air (OTA) Instant Updates (Progress Bar & Auto-Restart)
+For analytical pipeline adjustments, AI model parameters, densitometry filters, and UI features:
+* **Silent Background Detection**: Queries `version.json` non-intrusively upon app launch.
+* **Live Installation Progress Bar**: Shows interactive percentage progress (0% ➔ 100%) and stage descriptions (`Connecting...` ➔ `Querying manifest...` ➔ `Writing local storage...` ➔ `Restarting app...`).
+* **Instant Auto-Restart**: Immediately hot-reloads the local app instance with cache busting.
+* **Zero Network Penalty**: Operates 100% offline once downloaded.
+
+### Track 2: Native Android System Upgrades (In-App Direct Downloader)
+When core operating system features change (such as Android 14+ `MediaStore` hardware camera intents or native `FileProvider` configurations):
+* **Automatic Compatibility Detection**: RapidQuant inspects the compiled binary version (`minApkVersion` in `version.json`).
+* **Direct Upgrade Modal**: Displays a clean update dialog explaining the new hardware features with a 1-tap download link for `RapidQuant.apk`.
+* **Guaranteed Data Preservation**: Android automatically installs the new package over the old one without removing user files, calibrated standards, or saved historical assays.
 
 ---
 
