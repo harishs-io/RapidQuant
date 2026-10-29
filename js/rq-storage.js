@@ -10,6 +10,57 @@
 
   const DB_KEY = 'lfia_experiments_v2';
 
+  function showToast(msg, type = 'info') {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showToast === 'function') {
+      window.RQ.Core.showToast(msg, type);
+    } else if (typeof window.showToast === 'function') {
+      window.showToast(msg, type);
+    }
+  }
+
+  function showThemedAlert(opts) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showThemedAlert === 'function') {
+      return window.RQ.Core.showThemedAlert(opts);
+    } else if (typeof window.showThemedAlert === 'function') {
+      return window.showThemedAlert(opts);
+    }
+    alert(typeof opts === 'string' ? opts : ((opts && opts.message) || 'Notice'));
+    return Promise.resolve();
+  }
+
+  function showThemedConfirm(opts) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showThemedConfirm === 'function') {
+      return window.RQ.Core.showThemedConfirm(opts);
+    } else if (typeof window.showThemedConfirm === 'function') {
+      return window.showThemedConfirm(opts);
+    }
+    return Promise.resolve(confirm((opts && opts.message) || 'Confirm?'));
+  }
+
+  function showView(viewName) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showView === 'function') {
+      window.RQ.Core.showView(viewName);
+    } else if (typeof window.showView === 'function') {
+      window.showView(viewName);
+    }
+  }
+
+  function displayResultsView(exp) {
+    if (window.RQ && window.RQ.UI && typeof window.RQ.UI.displayResultsView === 'function') {
+      window.RQ.UI.displayResultsView(exp);
+    } else if (typeof window.displayResultsView === 'function') {
+      window.displayResultsView(exp);
+    }
+  }
+
+  function renderHomeStatsAndRecent() {
+    if (window.RQ && window.RQ.UI && typeof window.RQ.UI.renderHomeStatsAndRecent === 'function') {
+      window.RQ.UI.renderHomeStatsAndRecent();
+    } else if (typeof window.renderHomeStatsAndRecent === 'function') {
+      window.renderHomeStatsAndRecent();
+    }
+  }
+
   function showAppLoader(msg) {
     if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showToast === 'function') {
       window.RQ.Core.showToast(msg || 'Packaging files...', 'info');
@@ -162,7 +213,7 @@
           openBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             e.preventDefault();
-            currentResultsBundle = exp;
+            window.RQ.State.currentResultsBundle = exp; window.currentResultsBundle = exp;
             displayResultsView(exp);
             showView('results');
           });

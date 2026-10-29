@@ -266,7 +266,7 @@
           <h3 class="text-base font-bold text-slate-900 leading-tight">Build Update Available</h3>
           <p class="text-xs text-slate-500 mt-1">In RapidQuant <span id="build-modal-version-tag" class="font-bold text-teal-700 font-mono">v2.2.0</span>, a new build is ready:</p>
           <div class="mt-1 text-xs font-mono font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-xl inline-block border border-teal-200" id="build-modal-build-tag">
-            Build 11 Ready
+            Build 12 Ready
           </div>
         </div>
 
@@ -319,7 +319,7 @@
         <div class="flex items-center justify-between px-1 -mt-1">
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[10px] font-bold text-slate-600 font-mono">RapidQuant v2.2.0 <span class="text-[9px] text-teal-700 font-bold bg-teal-50 px-1.5 py-0.2 rounded-md border border-teal-200">Build 11</span></span>
+            <span class="text-[10px] font-bold text-slate-600 font-mono">RapidQuant v2.2.0 <span class="text-[9px] text-teal-700 font-bold bg-teal-50 px-1.5 py-0.2 rounded-md border border-teal-200">Build 12</span></span>
           </div>
           <button id="home-check-update-chip" type="button" class="text-[10px] font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-2.5 py-0.5 rounded-full flex items-center gap-1 transition active:scale-95 cursor-pointer">
             <span>🔄</span> Check for Updates
@@ -1833,9 +1833,16 @@
       }
     }
 
-    const viewKeys = ['home', 'setup', 'loader', 'camera', 'results', 'archives'];
-    viewKeys.forEach(key => {
-      const el = document.getElementById('view-' + key);
+    const viewMap = {
+      home: document.getElementById('view-home'),
+      setup: document.getElementById('view-experiment-setup'),
+      loader: document.getElementById('view-sample-loader'),
+      camera: document.getElementById('view-camera'),
+      results: document.getElementById('view-results'),
+      archives: document.getElementById('view-archives')
+    };
+    Object.keys(viewMap).forEach(key => {
+      const el = viewMap[key];
       if (el) {
         if (key === viewName) {
           el.classList.remove('hidden');
@@ -4371,7 +4378,19 @@
 
     // --- View 5: Results View Presentation ---
 
-    function openHookDilutionModal(uRecord, exp) {
+    
+  const hookDilutionModal = document.getElementById('hook-dilution-modal');
+  const closeHookModalBtn = document.getElementById('close-hook-dilution-modal-btn') || document.getElementById('close-hook-modal-btn');
+  const btnHookSnapCamera = document.getElementById('btn-hook-snap-camera');
+  const btnHookUploadFile = document.getElementById('btn-hook-upload-file');
+  const hookDilutionFileInput = document.getElementById('hook-dilution-file-input');
+  const hookModalSampleTitle = document.getElementById('hook-modal-sample-title');
+  const hookModalNeatTc = document.getElementById('hook-modal-neat-tc');
+  const hookComparisonResult = document.getElementById('hook-comparison-result');
+  let currentVerifyingUnknown = null;
+  let isHookDilutionCapture = false;
+
+  function openHookDilutionModal(uRecord, exp) {
       if (!hookDilutionModal) return;
       currentVerifyingUnknown = uRecord;
       currentVerifyingExp = exp;
@@ -4628,6 +4647,57 @@
 
   const DB_KEY = 'lfia_experiments_v2';
 
+  function showToast(msg, type = 'info') {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showToast === 'function') {
+      window.RQ.Core.showToast(msg, type);
+    } else if (typeof window.showToast === 'function') {
+      window.showToast(msg, type);
+    }
+  }
+
+  function showThemedAlert(opts) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showThemedAlert === 'function') {
+      return window.RQ.Core.showThemedAlert(opts);
+    } else if (typeof window.showThemedAlert === 'function') {
+      return window.showThemedAlert(opts);
+    }
+    alert(typeof opts === 'string' ? opts : ((opts && opts.message) || 'Notice'));
+    return Promise.resolve();
+  }
+
+  function showThemedConfirm(opts) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showThemedConfirm === 'function') {
+      return window.RQ.Core.showThemedConfirm(opts);
+    } else if (typeof window.showThemedConfirm === 'function') {
+      return window.showThemedConfirm(opts);
+    }
+    return Promise.resolve(confirm((opts && opts.message) || 'Confirm?'));
+  }
+
+  function showView(viewName) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showView === 'function') {
+      window.RQ.Core.showView(viewName);
+    } else if (typeof window.showView === 'function') {
+      window.showView(viewName);
+    }
+  }
+
+  function displayResultsView(exp) {
+    if (window.RQ && window.RQ.UI && typeof window.RQ.UI.displayResultsView === 'function') {
+      window.RQ.UI.displayResultsView(exp);
+    } else if (typeof window.displayResultsView === 'function') {
+      window.displayResultsView(exp);
+    }
+  }
+
+  function renderHomeStatsAndRecent() {
+    if (window.RQ && window.RQ.UI && typeof window.RQ.UI.renderHomeStatsAndRecent === 'function') {
+      window.RQ.UI.renderHomeStatsAndRecent();
+    } else if (typeof window.renderHomeStatsAndRecent === 'function') {
+      window.renderHomeStatsAndRecent();
+    }
+  }
+
   function showAppLoader(msg) {
     if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showToast === 'function') {
       window.RQ.Core.showToast(msg || 'Packaging files...', 'info');
@@ -4780,7 +4850,7 @@
           openBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             e.preventDefault();
-            currentResultsBundle = exp;
+            window.RQ.State.currentResultsBundle = exp; window.currentResultsBundle = exp;
             displayResultsView(exp);
             showView('results');
           });
@@ -5377,6 +5447,61 @@
   'use strict';
 
   window.RQ = window.RQ || {};
+
+  const nativeCamInput = document.getElementById('native-camera-input');
+  const galleryFileInput = document.getElementById('gallery-file-input');
+  const folderFileInput = document.getElementById('folder-file-input');
+
+  function showToast(msg, type = 'info') {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showToast === 'function') {
+      window.RQ.Core.showToast(msg, type);
+    } else if (typeof window.showToast === 'function') {
+      window.showToast(msg, type);
+    }
+  }
+
+  function showThemedAlert(opts) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showThemedAlert === 'function') {
+      return window.RQ.Core.showThemedAlert(opts);
+    } else if (typeof window.showThemedAlert === 'function') {
+      return window.showThemedAlert(opts);
+    }
+    alert(typeof opts === 'string' ? opts : ((opts && opts.message) || 'Notice'));
+    return Promise.resolve();
+  }
+
+  function showView(viewName) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showView === 'function') {
+      window.RQ.Core.showView(viewName);
+    } else if (typeof window.showView === 'function') {
+      window.showView(viewName);
+    }
+  }
+
+  function downloadImage(dataUrl, filename) {
+    if (window.RQ && window.RQ.Storage && typeof window.RQ.Storage.downloadImage === 'function') {
+      window.RQ.Storage.downloadImage(dataUrl, filename);
+    } else if (typeof window.downloadImage === 'function') {
+      window.downloadImage(dataUrl, filename);
+    }
+  }
+
+  function openFigureZoomModal(plot) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.openFigureZoomModal === 'function') {
+      window.RQ.Core.openFigureZoomModal(plot);
+    } else if (typeof window.openFigureZoomModal === 'function') {
+      window.openFigureZoomModal(plot);
+    }
+  }
+
+  function createChromatogramPlotDataUrl(strip, exp) {
+    if (window.RQ && window.RQ.Engine && typeof window.RQ.Engine.createChromatogramPlotDataUrl === 'function') {
+      return window.RQ.Engine.createChromatogramPlotDataUrl(strip, exp);
+    } else if (typeof window.createChromatogramPlotDataUrl === 'function') {
+      return window.createChromatogramPlotDataUrl(strip, exp);
+    }
+    return '';
+  }
     // --- View 2: Experiment Setup Dialog Logic ---
     const expNameInput = document.getElementById('setup-exp-name');
     const expDescInput = document.getElementById('setup-exp-desc');
@@ -5915,13 +6040,17 @@
     }
 
     // Handle File Selections
-    galleryFileInput.addEventListener('change', (e) => {
-      handleBatchFiles(e.target.files);
-    });
+    if (galleryFileInput) {
+      galleryFileInput.addEventListener('change', (e) => {
+        handleBatchFiles(e.target.files);
+      });
+    }
 
-    folderFileInput.addEventListener('change', (e) => {
-      handleBatchFiles(e.target.files);
-    });
+    if (folderFileInput) {
+      folderFileInput.addEventListener('change', (e) => {
+        handleBatchFiles(e.target.files);
+      });
+    }
 
     // Universal Batch File Processor
     async function handleBatchFiles(files) {
@@ -6973,8 +7102,8 @@
   window.RQ = window.RQ || {};
 
   const RAPIDQUANT_LOCAL_VERSION = '2.2.0';
-  const RAPIDQUANT_LOCAL_BUILD = 11;
-  const RAPIDQUANT_FULL_VERSION = '2.2.0.11';
+  const RAPIDQUANT_LOCAL_BUILD = 12;
+  const RAPIDQUANT_FULL_VERSION = '2.2.0.12';
   const GITHUB_OTA_ENDPOINT = 'https://harishs-io.github.io/RapidQuant/version.json';
   const GITHUB_OTA_HTML_URL = 'https://harishs-io.github.io/RapidQuant/index.html';
 

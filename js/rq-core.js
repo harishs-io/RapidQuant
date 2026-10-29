@@ -267,9 +267,16 @@
       }
     }
 
-    const viewKeys = ['home', 'setup', 'loader', 'camera', 'results', 'archives'];
-    viewKeys.forEach(key => {
-      const el = document.getElementById('view-' + key);
+    const viewMap = {
+      home: document.getElementById('view-home'),
+      setup: document.getElementById('view-experiment-setup'),
+      loader: document.getElementById('view-sample-loader'),
+      camera: document.getElementById('view-camera'),
+      results: document.getElementById('view-results'),
+      archives: document.getElementById('view-archives')
+    };
+    Object.keys(viewMap).forEach(key => {
+      const el = viewMap[key];
       if (el) {
         if (key === viewName) {
           el.classList.remove('hidden');

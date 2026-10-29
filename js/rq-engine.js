@@ -1943,7 +1943,19 @@
 
     // --- View 5: Results View Presentation ---
 
-    function openHookDilutionModal(uRecord, exp) {
+    
+  const hookDilutionModal = document.getElementById('hook-dilution-modal');
+  const closeHookModalBtn = document.getElementById('close-hook-dilution-modal-btn') || document.getElementById('close-hook-modal-btn');
+  const btnHookSnapCamera = document.getElementById('btn-hook-snap-camera');
+  const btnHookUploadFile = document.getElementById('btn-hook-upload-file');
+  const hookDilutionFileInput = document.getElementById('hook-dilution-file-input');
+  const hookModalSampleTitle = document.getElementById('hook-modal-sample-title');
+  const hookModalNeatTc = document.getElementById('hook-modal-neat-tc');
+  const hookComparisonResult = document.getElementById('hook-comparison-result');
+  let currentVerifyingUnknown = null;
+  let isHookDilutionCapture = false;
+
+  function openHookDilutionModal(uRecord, exp) {
       if (!hookDilutionModal) return;
       currentVerifyingUnknown = uRecord;
       currentVerifyingExp = exp;

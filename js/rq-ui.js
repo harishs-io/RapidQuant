@@ -7,6 +7,61 @@
   'use strict';
 
   window.RQ = window.RQ || {};
+
+  const nativeCamInput = document.getElementById('native-camera-input');
+  const galleryFileInput = document.getElementById('gallery-file-input');
+  const folderFileInput = document.getElementById('folder-file-input');
+
+  function showToast(msg, type = 'info') {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showToast === 'function') {
+      window.RQ.Core.showToast(msg, type);
+    } else if (typeof window.showToast === 'function') {
+      window.showToast(msg, type);
+    }
+  }
+
+  function showThemedAlert(opts) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showThemedAlert === 'function') {
+      return window.RQ.Core.showThemedAlert(opts);
+    } else if (typeof window.showThemedAlert === 'function') {
+      return window.showThemedAlert(opts);
+    }
+    alert(typeof opts === 'string' ? opts : ((opts && opts.message) || 'Notice'));
+    return Promise.resolve();
+  }
+
+  function showView(viewName) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.showView === 'function') {
+      window.RQ.Core.showView(viewName);
+    } else if (typeof window.showView === 'function') {
+      window.showView(viewName);
+    }
+  }
+
+  function downloadImage(dataUrl, filename) {
+    if (window.RQ && window.RQ.Storage && typeof window.RQ.Storage.downloadImage === 'function') {
+      window.RQ.Storage.downloadImage(dataUrl, filename);
+    } else if (typeof window.downloadImage === 'function') {
+      window.downloadImage(dataUrl, filename);
+    }
+  }
+
+  function openFigureZoomModal(plot) {
+    if (window.RQ && window.RQ.Core && typeof window.RQ.Core.openFigureZoomModal === 'function') {
+      window.RQ.Core.openFigureZoomModal(plot);
+    } else if (typeof window.openFigureZoomModal === 'function') {
+      window.openFigureZoomModal(plot);
+    }
+  }
+
+  function createChromatogramPlotDataUrl(strip, exp) {
+    if (window.RQ && window.RQ.Engine && typeof window.RQ.Engine.createChromatogramPlotDataUrl === 'function') {
+      return window.RQ.Engine.createChromatogramPlotDataUrl(strip, exp);
+    } else if (typeof window.createChromatogramPlotDataUrl === 'function') {
+      return window.createChromatogramPlotDataUrl(strip, exp);
+    }
+    return '';
+  }
     // --- View 2: Experiment Setup Dialog Logic ---
     const expNameInput = document.getElementById('setup-exp-name');
     const expDescInput = document.getElementById('setup-exp-desc');
@@ -545,13 +600,17 @@
     }
 
     // Handle File Selections
-    galleryFileInput.addEventListener('change', (e) => {
-      handleBatchFiles(e.target.files);
-    });
+    if (galleryFileInput) {
+      galleryFileInput.addEventListener('change', (e) => {
+        handleBatchFiles(e.target.files);
+      });
+    }
 
-    folderFileInput.addEventListener('change', (e) => {
-      handleBatchFiles(e.target.files);
-    });
+    if (folderFileInput) {
+      folderFileInput.addEventListener('change', (e) => {
+        handleBatchFiles(e.target.files);
+      });
+    }
 
     // Universal Batch File Processor
     async function handleBatchFiles(files) {
