@@ -11,9 +11,9 @@
 
 <p align="center">
   <a href="https://harishs-io.github.io/RapidQuant/"><img src="https://img.shields.io/badge/Live%20PWA-Launch%20App-00D2B4?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live App"></a>
-  <a href="https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk"><img src="https://img.shields.io/badge/Android%20APK-v2.1.4%20(43%20MB)-34D399?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK"></a>
+  <a href="https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk"><img src="https://img.shields.io/badge/Android%20APK-v2.2.0%20(43%20MB)-34D399?style=for-the-badge&logo=android&logoColor=white" alt="Download Android APK"></a>
   <a href="https://harishs-io.github.io/RapidQuant/RapidQuant.ipa"><img src="https://img.shields.io/badge/iOS%20IPA-Download%20(42%20MB)-38BDF8?style=for-the-badge&logo=apple&logoColor=white" alt="Download iOS IPA"></a>
-  <a href="https://github.com/harishs-io/RapidQuant"><img src="https://img.shields.io/badge/Version-2.1.4-blue?style=for-the-badge" alt="Version 2.1.4"></a>
+  <a href="https://github.com/harishs-io/RapidQuant"><img src="https://img.shields.io/badge/Version-2.2.0-blue?style=for-the-badge" alt="Version 2.2.0"></a>
   <a href="#license"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License MIT"></a>
 </p>
 
@@ -44,9 +44,12 @@ This classical routine requires hours to days per calibration series, introduces
 * 🤖 **Autonomous Strip Detection & Rectification**: Cascaded YOLOv8 AI isolates the reactive nitrocellulose membrane from any smartphone angle or ambient lighting, completely replacing manual image cropping ($99.5\%\text{ mAP@50}$).
 * 📍 **Sub-Pixel Band Localization**: Pinpoints Control and Test bands with $\le 0.1\text{ px}$ spatial centroid precision, eliminating subjective hand-drawn ImageJ bounding boxes.
 * 🌈 **LSPR Differential Optical Physics**: Extracts colloidal gold Localized Surface Plasmon Resonance absorption ($\lambda \approx 530\text{ nm}$) via differential densitometry ($\Delta A = A_{\text{Green}} - A_{\text{Red}} = I_{\text{Red}} - I_{\text{Green}}$) and removes membrane background gradients via 1D morphological grey opening (`grey_opening`, $R = 35\text{ px}$).
-* 📊 **Automated Replicate Statistics**: Automatically groups experimental replicates across concentration series, computing mean analytical ratios, standard deviations, and %CV with zero spreadsheet transcription.
-* 📈 **4PL Calibration & CLSI EP17-A2 LoD**: Automatically fits the non-linear 4-Parameter Logistic standard curve ($R^2 \ge 0.99$) and rigorously computes the Limit of Blank ($\text{LoB}$) and clinical Limit of Detection ($\text{LoD} = 0.0297\text{ ng/mL}$) with $95\%$ statistical certainty.
-* 🎨 **Publication-Ready Figures & Reports**: Instantly generates high-resolution publication-quality vector plots (optical chromatograms with baseline continuum, 4PL calibration curves with replicate error bars, and analytical audit tables) ready for journal submissions, regulatory filings, or clinical point-of-care decisions.
+* 🎯 **Find Unknown Concentration Workflow**: Build 6–12 point triplicate standard curves with 2 saturation plateau anchors, quantify batched unknown specimens, and obtain exact concentrations with 95% Student's $t$ Prediction Intervals.
+* ⚖️ **Adaptive 4PL vs. 5PL Decision Tree**: Evaluates Extra Sum-of-Squares $F$-test ($p < 0.05$) and Akaike Information Criterion (AICc) via Weighted Nelder-Mead simplex optimization to guarantee $\ge 99\%$ prediction accuracy without over-parameterization.
+* 🧪 **Hook (Prozone) Effect Verification (CLSI EP34)**: Statistically validates suspected high-titer antigen excess via a two-point 1:10 dilution parallelism test ($\Delta y = y_{\text{diluted}} - y_{\text{neat}}$), eliminating optical smearing false negatives and correctly scaling true concentration ($x_{\text{final}} = x_{\text{diluted}} \times 10$).
+* 📊 **Automated Replicate Statistics & Standards Recovery**: Groups experimental triplicates ($n=3$), computing mean analytical ratios, standard deviations, %CV, and CLSI EP06/FDA back-calculated recoveries ($85\% - 115\%$).
+* 📈 **Bioanalytical Parameters Audit Card Below Graph**: Displays exact fitted formulas ($a, b, c, d, g$), selection rationale, $\text{LoB}$, $\text{LoD}$, $\text{LLoQ}$, $\text{ULoQ}$, and Linear Dynamic Range (LDR) directly beneath the curve.
+* 🎨 **Publication-Ready Figures & Reports**: Instantly generates high-resolution publication-quality vector plots (optical chromatograms with baseline continuum, calibration curves with replicate error bars, and analytical audit tables) ready for journal submissions, regulatory filings, or clinical point-of-care decisions.
 * 🔒 **100% Offline & Private**: Runs entirely in the browser and native mobile apps without cloud servers or data transmission.
 
 ---
@@ -56,11 +59,13 @@ This classical routine requires hours to days per calibration series, introduces
 ### 🤖 1. Android Installation (Direct APK)
 For any Android smartphone, tablet, or clinical field device (Samsung, Google Pixel, OnePlus, Xiaomi, etc.):
 
-- **Direct Download**: [**`RapidQuant.apk` (v2.1.4)**](https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk) *(43 MB, Build 6, Android 7.0 to 15+)*
-- **What's New in v2.1.4**:
-  * 📸 **Direct Samsung & Device Camera Launch**: Native `FileProvider` and `MediaStore.ACTION_IMAGE_CAPTURE` intent directly launches your phone's native camera hardware with tap-to-focus and macro mode.
-  * 🔄 **Dual-Track Update System**: In-app OTA progress bar (0% ➔ 100%) for analytical models, plus automated system prompts when a native APK upgrade is available.
-  * 🛡️ **Zero Data Loss Upgrades**: Installing `RapidQuant.apk` safely overwrites earlier builds in-place while keeping 100% of your saved strip records and calibration history intact.
+- **Direct Download**: [**`RapidQuant.apk` (v2.2.0)**](https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk) *(43 MB, Build 7, Android 7.0 to 15+)*
+- **What's New in v2.2.0**:
+  * 🎯 **Find Unknown Concentration Workflow**: Quantify unknown sample strips against 6–12 point triplicate calibration curves with saturation plateau anchors.
+  * ⚖️ **Adaptive 4PL vs. 5PL Decision Tree**: Automated $F$-test and AIC selection across Single Strip, LoD, and Unknown workflows.
+  * 🧪 **Hook Effect Dilution Verification**: Two-point dilution test resolves prozone ambiguity and calculates corrected true concentration.
+  * 📐 **Analytical Audit Card**: Parameter equations ($a, b, c, d, g$), CLSI validation limits, and standards recovery tables displayed below the graph.
+  * 🏷️ **Customizable Concentration Units**: Support for `ng/mL`, `pg/mL`, `µg/mL`, `mg/L`, `mIU/mL`, `nmol/L`, `ppm`, `ppb`, and custom free-text units.
 - **Installation Steps**:
   1. Download `RapidQuant.apk` directly on your Android phone.
   2. Tap the downloaded file in your browser downloads or file notification.

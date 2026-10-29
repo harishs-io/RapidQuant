@@ -1,10 +1,10 @@
 {
   "appName": "RapidQuant",
-  "version": "2.1.4",
-  "build": 6,
+  "version": "2.2.0",
+  "build": 7,
   "minApkVersion": "2.1.4",
   "apkUrl": "https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk",
   "releaseDate": "2026-10-29",
   "otaUrl": "https://harishs-io.github.io/RapidQuant/",
-  "changelog": "Dual-track update system: in-app OTA progress bar for analytical models, automatic APK update dialog when native hardware drivers require upgrade."
+  "changelog": "Find Unknown Concentration workflow: 6-12 point triplicate standard curve, adaptive 4PL vs 5PL model selection with Extra Sum-of-Squares F-test & AIC, Weighted Nelder-Mead optimization (≥99% precision), Hook (prozone) effect verification via Two-Point Dilution Parallelism Test (CLSI EP34), customizable concentration units, batch sample quantification with 95% Student's t Prediction Intervals, and comprehensive analytical parameters audit card below standard curve."
 }
