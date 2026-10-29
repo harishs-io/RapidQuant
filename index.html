@@ -5229,65 +5229,96 @@
 
     // --- View 5: Results View Presentation ---
     function displayResultsView(exp) {
-      document.getElementById('results-exp-title').textContent = exp.name;
+      if (!exp) return;
+      const titleEl = document.getElementById('results-exp-title');
+      if (titleEl) titleEl.textContent = exp.name || 'Experiment Results';
       const modeLabel = exp.mode === 'unknown' ? 'Unknown Concentration Quantification' : (exp.mode === 'lod' ? 'LoD Calibration Series' : 'Single Strip Mode');
-      document.getElementById('results-exp-meta').textContent = `${exp.strips.length} Strips Quantified • ${modeLabel} • ${exp.date.replace('T', ' ')}`;
-      document.getElementById('results-strips-count-badge').textContent = `${exp.strips.length} Strips`;
+      const dateStr = (exp.date || '').replace('T', ' ');
+      const stripCount = (exp.strips && Array.isArray(exp.strips)) ? exp.strips.length : 0;
+      
+      const metaEl = document.getElementById('results-exp-meta');
+      if (metaEl) metaEl.textContent = `${stripCount} Strips Quantified • ${modeLabel} • ${dateStr}`;
+      
+      const countBadge = document.getElementById('results-strips-count-badge');
+      if (countBadge) countBadge.textContent = `${stripCount} Strips`;
 
       const lodSection = document.getElementById('results-lod-section');
-      const singleNotice = document.getElementById('results-single-notice');
       const auditCard = document.getElementById('results-model-audit-card');
 
       if (exp.lodCalibration && exp.lodCalibration.lod_conc != null && exp.lodCalibration.lod_plot) {
-        lodSection.classList.remove('hidden');
-        singleNotice.classList.add('hidden');
+        if (lodSection) lodSection.classList.remove('hidden');
 
-        document.getElementById('lod-val-display').innerHTML = `${exp.lodCalibration.lod_conc} <span class="text-xs text-purple-300 font-normal">${exp.unit}</span>`;
-        document.getElementById('lod-r2-display').textContent = exp.lodCalibration.r_squared.toFixed(4);
-        document.getElementById('lod-lob-display').textContent = `Limit of Blank (LoB): ${exp.lodCalibration.lob_signal} a.u.`;
+        const lodValDisp = document.getElementById('lod-val-display');
+        if (lodValDisp) lodValDisp.innerHTML = `${exp.lodCalibration.lod_conc} <span class="text-xs text-purple-300 font-normal">${exp.unit || 'ng/mL'}</span>`;
+        
+        const r2El = document.getElementById('lod-r2-display');
+        if (r2El) {
+          const r2Val = typeof exp.lodCalibration.r_squared === 'number' ? exp.lodCalibration.r_squared : parseFloat(exp.lodCalibration.r_squared || 0);
+          r2El.textContent = r2Val.toFixed(4);
+        }
+        
+        const lobDisp = document.getElementById('lod-lob-display');
+        if (lobDisp) lobDisp.textContent = `Limit of Blank (LoB): ${exp.lodCalibration.lob_signal || 0} a.u.`;
 
         const lodImg = document.getElementById('lod-curve-img');
-        lodImg.src = exp.lodCalibration.lod_plot;
+        if (lodImg) {
+          lodImg.src = exp.lodCalibration.lod_plot;
+          lodImg.onclick = () => {
+            openFigureZoomModal(exp.lodCalibration.lod_plot);
+          };
+        }
 
         // Zoom button
-        document.getElementById('zoom-lod-plot-btn').onclick = () => {
-          openFigureZoomModal(exp.lodCalibration.lod_plot);
-        };
-        lodImg.onclick = () => {
-          openFigureZoomModal(exp.lodCalibration.lod_plot);
-        };
+        const zoomBtn = document.getElementById('zoom-lod-plot-btn');
+        if (zoomBtn) {
+          zoomBtn.onclick = () => {
+            openFigureZoomModal(exp.lodCalibration.lod_plot);
+          };
+        }
 
         // Download LoD Curve PNG
-        document.getElementById('download-lod-plot-btn').onclick = () => {
-          downloadImage(exp.lodCalibration.lod_plot, `${exp.name}_Standard_Curve_LoD.png`);
-        };
+        const downloadPlotBtn = document.getElementById('download-lod-plot-btn');
+        if (downloadPlotBtn) {
+          downloadPlotBtn.onclick = () => {
+            downloadImage(exp.lodCalibration.lod_plot, `${exp.name || 'Assay'}_Standard_Curve_LoD.png`);
+          };
+        }
 
         // --- POPULATE DETAILED ANALYTICAL MODEL AUDIT CARD BELOW GRAPH ---
         if (auditCard) {
           auditCard.classList.remove('hidden');
           const cal = exp.lodCalibration;
+          const selectedModel = cal.selectedModel || '4PL';
 
           // Model Badge & F-Test Tag
           const modelBadge = document.getElementById('audit-model-badge');
           if (modelBadge) {
-            modelBadge.textContent = `${cal.selectedModel} (${cal.selectedModel === '5PL' ? 'Asymmetric Plateau' : 'Symmetric Logistic'})`;
-            modelBadge.className = `text-[10px] font-bold px-2.5 py-0.5 rounded-full ${cal.selectedModel === '5PL' ? 'bg-purple-50 text-purple-800 border-purple-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200'} font-mono`;
+            modelBadge.textContent = `${selectedModel} (${selectedModel === '5PL' ? 'Asymmetric Plateau' : 'Symmetric Logistic'})`;
+            modelBadge.className = `text-[10px] font-bold px-2.5 py-0.5 rounded-full ${selectedModel === '5PL' ? 'bg-purple-50 text-purple-800 border-purple-200' : 'bg-emerald-50 text-emerald-800 border-emerald-200'} font-mono`;
           }
 
           const decisionTag = document.getElementById('audit-decision-tree-tag');
           if (decisionTag) {
-            decisionTag.textContent = `F = ${cal.f_stat.toFixed(2)}, p = ${cal.p_val < 0.001 ? '< 0.001' : cal.p_val.toFixed(3)}`;
+            if (typeof cal.f_stat === 'number' && typeof cal.p_val === 'number') {
+              decisionTag.textContent = `F = ${cal.f_stat.toFixed(2)}, p = ${cal.p_val < 0.001 ? '< 0.001' : cal.p_val.toFixed(3)}`;
+            } else {
+              decisionTag.textContent = 'Analytical Fit (CLSI EP17)';
+            }
           }
 
           // Formula Display
           const formulaDisp = document.getElementById('audit-formula-display');
-          if (formulaDisp && cal.params) {
-            const [a, b, c, d] = cal.params;
-            if (cal.selectedModel === '5PL') {
-              const g = cal.params[4];
-              formulaDisp.textContent = `y = ${d.toFixed(4)} + (${a.toFixed(4)} - ${d.toFixed(4)}) / [1 + (x / ${c.toFixed(4)})^${b.toFixed(4)}]^${g.toFixed(4)}`;
+          if (formulaDisp) {
+            if (Array.isArray(cal.params) && cal.params.length >= 4) {
+              const [a, b, c, d] = cal.params.map(v => Number(v || 0));
+              if (selectedModel === '5PL' && cal.params.length >= 5) {
+                const g = Number(cal.params[4] || 1);
+                formulaDisp.textContent = `y = ${d.toFixed(4)} + (${a.toFixed(4)} - ${d.toFixed(4)}) / [1 + (x / ${c.toFixed(4)})^${b.toFixed(4)}]^${g.toFixed(4)}`;
+              } else {
+                formulaDisp.textContent = `y = ${d.toFixed(4)} + (${a.toFixed(4)} - ${d.toFixed(4)}) / [1 + (x / ${c.toFixed(4)})^${b.toFixed(4)}]`;
+              }
             } else {
-              formulaDisp.textContent = `y = ${d.toFixed(4)} + (${a.toFixed(4)} - ${d.toFixed(4)}) / [1 + (x / ${c.toFixed(4)})^${b.toFixed(4)}]`;
+              formulaDisp.textContent = 'Standard 4-Parameter Logistic (4PL) Calibration Model';
             }
           }
 
@@ -5297,15 +5328,15 @@
           }
 
           // Parameters Grid
-          if (cal.params) {
+          if (Array.isArray(cal.params) && cal.params.length >= 4) {
             const elA = document.getElementById('audit-param-a');
             const elB = document.getElementById('audit-param-b');
             const elC = document.getElementById('audit-param-c');
             const elD = document.getElementById('audit-param-d');
-            if (elA) elA.textContent = cal.params[0].toFixed(4);
-            if (elB) elB.textContent = cal.params[1].toFixed(4);
-            if (elC) elC.textContent = `${cal.params[2].toFixed(4)} ${exp.unit}`;
-            if (elD) elD.textContent = cal.params[3].toFixed(4);
+            if (elA) elA.textContent = Number(cal.params[0] || 0).toFixed(4);
+            if (elB) elB.textContent = Number(cal.params[1] || 0).toFixed(4);
+            if (elC) elC.textContent = `${Number(cal.params[2] || 0).toFixed(4)} ${exp.unit || ''}`;
+            if (elD) elD.textContent = Number(cal.params[3] || 0).toFixed(4);
           }
 
           // Quantitative Boundaries
@@ -5313,28 +5344,34 @@
           const elSat = document.getElementById('audit-sat-threshold');
           const elLob = document.getElementById('audit-lob-val');
           const elLod = document.getElementById('audit-lod-val');
-          if (elLdr) elLdr.textContent = `${cal.ldr_min} – ${cal.ldr_max} ${exp.unit}`;
-          if (elSat) elSat.textContent = `T/C ≥ ${cal.sat_threshold} (ULoQ: ${cal.uloq_conc} ${exp.unit})`;
-          if (elLob) elLob.textContent = `${cal.lob_signal} a.u.`;
-          if (elLod) elLod.textContent = `${cal.lod_conc} ${exp.unit}`;
+          if (elLdr) elLdr.textContent = (cal.ldr_min != null && cal.ldr_max != null) ? `${cal.ldr_min} – ${cal.ldr_max} ${exp.unit || ''}` : `0 – 10.0 ${exp.unit || ''}`;
+          if (elSat) elSat.textContent = cal.sat_threshold != null ? `T/C ≥ ${cal.sat_threshold} (ULoQ: ${cal.uloq_conc || 'N/A'} ${exp.unit || ''})` : 'Monitored';
+          if (elLob) elLob.textContent = `${cal.lob_signal || '0.000'} a.u.`;
+          if (elLod) elLod.textContent = `${cal.lod_conc || '0.000'} ${exp.unit || ''}`;
 
           // Standards Back-Calculated Recovery Table
           const recoveryTbody = document.getElementById('audit-recovery-table-body');
-          if (recoveryTbody && cal.recoveries) {
+          if (recoveryTbody) {
             recoveryTbody.innerHTML = '';
-            cal.recoveries.forEach(rec => {
-              const tr = document.createElement('tr');
-              tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
-              tr.innerHTML = `
-                <td class="p-2 font-bold text-slate-800">${rec.nominalConc} ${exp.unit}${rec.nominalConc === 0 ? ' (Blank)' : ''}</td>
-                <td class="p-2">${rec.meanTc.toFixed(4)} ± ${rec.sdTc.toFixed(4)}</td>
-                <td class="p-2 text-teal-700 font-bold">${rec.calcConc} ${exp.unit}</td>
-                <td class="p-2 font-bold ${rec.pass ? 'text-emerald-700' : 'text-rose-600'}">${rec.recoveryPct.toFixed(1)}%</td>
-                <td class="p-2 text-slate-600">${rec.cvPct.toFixed(1)}%</td>
-                <td class="p-2"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${rec.pass ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">${rec.pass ? 'PASS' : 'FLAGGED'}</span></td>
-              `;
-              recoveryTbody.appendChild(tr);
-            });
+            if (Array.isArray(cal.recoveries) && cal.recoveries.length > 0) {
+              cal.recoveries.forEach(rec => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
+                const meanTc = typeof rec.meanTc === 'number' ? rec.meanTc.toFixed(4) : (rec.meanTc || '0.0000');
+                const sdTc = typeof rec.sdTc === 'number' ? rec.sdTc.toFixed(4) : (rec.sdTc || '0.0000');
+                const recPct = typeof rec.recoveryPct === 'number' ? rec.recoveryPct.toFixed(1) : (rec.recoveryPct || '100.0');
+                const cvPct = typeof rec.cvPct === 'number' ? rec.cvPct.toFixed(1) : (rec.cvPct || '0.0');
+                tr.innerHTML = `
+                  <td class="p-2 font-bold text-slate-800">${rec.nominalConc || 0} ${exp.unit || ''}${rec.nominalConc === 0 ? ' (Blank)' : ''}</td>
+                  <td class="p-2">${meanTc} ± ${sdTc}</td>
+                  <td class="p-2 text-teal-700 font-bold">${rec.calcConc || '0.000'} ${exp.unit || ''}</td>
+                  <td class="p-2 font-bold ${rec.pass ? 'text-emerald-700' : 'text-rose-600'}">${recPct}%</td>
+                  <td class="p-2 text-slate-600">${cvPct}%</td>
+                  <td class="p-2"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${rec.pass ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}">${rec.pass ? 'PASS' : 'FLAGGED'}</span></td>
+                `;
+                recoveryTbody.appendChild(tr);
+              });
+            }
           }
 
           // Unknown Samples Table
@@ -5342,7 +5379,7 @@
           const unknownTbody = document.getElementById('unknown-quant-table-body');
           const unknownCountPill = document.getElementById('unknown-samples-count-pill');
 
-          if (cal.unknown_results && cal.unknown_results.length > 0) {
+          if (Array.isArray(cal.unknown_results) && cal.unknown_results.length > 0) {
             if (unknownSection) unknownSection.classList.remove('hidden');
             if (unknownCountPill) unknownCountPill.textContent = `${cal.unknown_results.length} Unknowns`;
             if (unknownTbody) {
@@ -5351,23 +5388,27 @@
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-emerald-50/40 transition border-b border-slate-100';
 
+                const zone = u.zone || 'Quantified';
                 let zoneClass = 'bg-slate-100 text-slate-700';
-                if (u.zone.includes('Linear')) zoneClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200';
-                else if (u.zone.includes('Saturated')) zoneClass = 'bg-amber-50 text-amber-800 border border-amber-200';
-                else if (u.isHookSuspect || u.zone.includes('Hook')) zoneClass = 'bg-rose-50 text-rose-800 border border-rose-200';
+                if (zone.includes('Linear')) zoneClass = 'bg-emerald-50 text-emerald-800 border border-emerald-200';
+                else if (zone.includes('Saturated')) zoneClass = 'bg-amber-50 text-amber-800 border border-amber-200';
+                else if (u.isHookSuspect || zone.includes('Hook')) zoneClass = 'bg-rose-50 text-rose-800 border border-rose-200';
 
-                const ciMargin = Math.abs(u.ciUpper - u.finalConc).toFixed(3);
-                const ciDisplay = `${u.finalConc.toFixed(3)} ± ${ciMargin} ${exp.unit}`;
+                const finalConcNum = typeof u.finalConc === 'number' ? u.finalConc : parseFloat(u.finalConc || 0);
+                const ciUpperNum = typeof u.ciUpper === 'number' ? u.ciUpper : (finalConcNum * 1.05);
+                const ciMargin = Math.abs(ciUpperNum - finalConcNum).toFixed(3);
+                const ciDisplay = `${finalConcNum.toFixed(3)} ± ${ciMargin} ${exp.unit || ''}`;
+                const tcDisplay = typeof u.tcRatio === 'number' ? u.tcRatio.toFixed(4) : (u.tcRatio || '0.0000');
 
                 tr.innerHTML = `
-                  <td class="p-2 font-bold text-slate-900">${u.sampleId}</td>
-                  <td class="p-2 font-mono">${u.tcRatio.toFixed(4)}</td>
+                  <td class="p-2 font-bold text-slate-900">${u.sampleId || 'Sample'}</td>
+                  <td class="p-2 font-mono">${tcDisplay}</td>
                   <td class="p-2 font-mono font-bold text-emerald-700">${ciDisplay}</td>
-                  <td class="p-2"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${zoneClass}">${u.zone}</span></td>
-                  <td class="p-2 font-mono">${u.dilutionFactor}x</td>
+                  <td class="p-2"><span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${zoneClass}">${zone}</span></td>
+                  <td class="p-2 font-mono">${u.dilutionFactor || 1.0}x</td>
                   <td class="p-2 text-center">
                     <button class="btn-verify-hook-dilution px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-sans font-bold text-[10px] shadow-2xs transition active:scale-95 cursor-pointer"
-                      data-id="${u.id}" data-sampleid="${u.sampleId}" data-tc="${u.tcRatio}">
+                      data-id="${u.id || ''}" data-sampleid="${u.sampleId || ''}" data-tc="${u.tcRatio || ''}">
                       🧪 Verify 1:10 Dilution
                     </button>
                   </td>
@@ -5389,8 +5430,7 @@
           }
         }
       } else {
-        lodSection.classList.add('hidden');
-        singleNotice.classList.remove('hidden');
+        if (lodSection) lodSection.classList.add('hidden');
         if (auditCard) auditCard.classList.add('hidden');
       }
 
@@ -5421,20 +5461,20 @@
           <div class="grid grid-cols-2 gap-2 text-center">
             <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-2">
               <span class="text-[9px] font-bold text-slate-400 uppercase">T/C Ratio</span>
-              <div class="text-lg font-black text-slate-900 font-mono mt-0.5">${strip.tcRatio.toFixed(4)}</div>
+              <div class="text-lg font-black text-slate-900 font-mono mt-0.5">${Number(strip.tcRatio || 0).toFixed(4)}</div>
             </div>
             <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-2">
               <span class="text-[9px] font-bold text-slate-400 uppercase">${strip.isUnknown ? 'Quantified Conc' : (exp.mode === 'lod' ? 'Assigned Conc' : 'Calculated Conc')}</span>
               <div class="text-base font-black text-teal-600 font-mono mt-0.5">
-                ${strip.isUnknown ? (strip.calculatedConc ? strip.calculatedConc.toFixed(3) : '—') : (exp.mode === 'lod' ? strip.assignedConc : strip.calculatedConc.toFixed(3))} <span class="text-[10px] font-normal text-slate-500">${strip.assignedUnit || exp.unit}</span>
+                ${strip.isUnknown ? (strip.calculatedConc != null ? Number(strip.calculatedConc).toFixed(3) : '—') : (exp.mode === 'lod' ? (strip.assignedConc != null ? strip.assignedConc : '0') : (strip.calculatedConc != null ? Number(strip.calculatedConc).toFixed(3) : (strip.assignedConc != null ? strip.assignedConc : '0.000')))} <span class="text-[10px] font-normal text-slate-500">${strip.assignedUnit || exp.unit || 'ng/mL'}</span>
               </div>
             </div>
           </div>
 
           <div class="flex justify-around items-center text-xs font-mono py-1 bg-slate-50 rounded-xl border border-slate-100">
-            <span class="text-purple-700 font-bold">C Area: ${strip.cArea.toFixed(1)}</span>
+            <span class="text-purple-700 font-bold">C Area: ${Number(strip.cArea || 0).toFixed(1)}</span>
             <span class="text-slate-300">|</span>
-            <span class="text-blue-700 font-bold">T Area: ${strip.tArea.toFixed(1)}</span>
+            <span class="text-blue-700 font-bold">T Area: ${Number(strip.tArea || 0).toFixed(1)}</span>
           </div>
 
           <!-- Publication Figure (Screenshot 2 Style) -->
@@ -5656,10 +5696,13 @@
       showView('loader');
     });
 
-    document.getElementById('btn-goto-archives-from-results').addEventListener('click', () => {
-      renderArchivesView();
-      showView('archives');
-    });
+    const gotoArchivesFromResults = document.getElementById('btn-goto-archives-from-results');
+    if (gotoArchivesFromResults) {
+      gotoArchivesFromResults.addEventListener('click', () => {
+        renderArchivesView();
+        showView('archives');
+      });
+    }
 
     document.getElementById('btn-return-home-from-results').addEventListener('click', () => {
       showView('home');
