@@ -73,28 +73,27 @@
   <div id="phone-container" class="phone-frame flex flex-col">
 
     <!-- Unified Notch-Fitting App Header (Zero stacked bars, hugs phone notch) -->
-    <header id="main-app-header" class="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 pt-[max(env(safe-area-inset-top),12px)] pb-3 flex items-center justify-between shrink-0 z-40 sticky top-0 shadow-2xs">
-      <div class="flex items-center gap-2">
-        <button id="nav-back-btn" class="hidden p-1.5 -ml-1 text-slate-700 hover:text-teal-600 rounded-xl transition" title="Go Back">
-          <span class="text-base font-bold">←</span>
+    <header id="main-app-header" class="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-3.5 pt-[max(env(safe-area-inset-top),10px)] pb-2.5 flex items-center justify-between shrink-0 z-40 sticky top-0 shadow-2xs min-h-[56px]">
+      <div class="flex items-center gap-2 min-w-0 flex-1">
+        <button id="nav-back-btn" class="hidden p-1.5 -ml-1 text-slate-700 hover:text-teal-600 rounded-xl transition shrink-0 active:scale-95" title="Go Back">
+          <span class="text-base font-bold leading-none">←</span>
         </button>
-        <button id="nav-home-btn" class="flex items-center gap-2 text-left">
-          <img src="assets/logo.png" alt="RapidQuant Logo" class="w-8 h-8 rounded-xl object-cover shadow-xs border border-slate-700/20" />
-          <div>
-            <h1 class="text-xs font-black text-slate-900 tracking-tight leading-tight">RAPIDQUANT</h1>
-            <span id="nav-mode-pill" class="text-[9px] text-teal-600 font-bold uppercase tracking-wider flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
-              <span>TWO-STAGE AI ACTIVE</span>
+        <button id="nav-home-btn" class="flex items-center gap-2 text-left min-w-0 flex-1">
+          <img src="assets/logo.png" alt="RapidQuant Logo" class="w-8 h-8 rounded-xl object-cover shadow-xs border border-slate-700/20 shrink-0" />
+          <div class="min-w-0 flex-1">
+            <h1 class="text-xs font-black text-slate-900 tracking-tight leading-tight truncate">RAPIDQUANT</h1>
+            <span id="nav-mode-pill" class="text-[9px] text-teal-600 font-bold uppercase tracking-wider block truncate">
+              <span class="w-1.5 h-1.5 rounded-full bg-teal-500 inline-block mr-1"></span>TWO-STAGE AI ACTIVE
             </span>
           </div>
         </button>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1.5 shrink-0">
         <button id="nav-download-app-btn" class="px-2.5 py-1.5 rounded-xl bg-teal-50 border border-teal-200 text-teal-800 text-xs font-bold shadow-2xs hover:bg-teal-100 flex items-center gap-1 active:scale-95 transition" title="Download & Install App">
           <span>📥</span> Get App
         </button>
-        <button id="nav-archives-btn" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold shadow-2xs hover:bg-slate-50 flex items-center gap-1 active:scale-95 transition" title="Open Archives">
-          <span>📁</span> Archives
+        <button id="nav-archives-btn" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold shadow-2xs hover:bg-slate-50 flex items-center gap-1 active:scale-95 transition" title="Saved Experiments">
+          <span>📁</span> Saved
         </button>
         <button id="nav-settings-btn" class="p-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold shadow-2xs hover:bg-slate-50 active:scale-95 transition" title="Settings">
           <span>⚙️</span>
@@ -386,16 +385,16 @@
               </div>
               <div class="flex-1">
                 <div class="flex items-center justify-between">
-                  <h3 class="text-sm font-bold text-slate-900">View Previous Data</h3>
+                  <h3 class="text-sm font-bold text-slate-900">View Saved Experiments</h3>
                   <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
-                    Archives & Storage
+                    Saved
                   </span>
                 </div>
                 <p class="text-xs text-slate-500 mt-1 leading-relaxed">
-                  Browse previous experiment folders, review saved publication figures, inspect calibration curves, and export to local device files.
+                  Browse previous experiment runs, review saved publication figures, inspect calibration curves, and export to local device files.
                 </p>
                 <div class="mt-3 flex items-center text-xs font-bold text-blue-600">
-                  <span>Open In-App Archives</span>
+                  <span>View Saved Experiments</span>
                   <span class="ml-1 text-sm">→</span>
                 </div>
               </div>
@@ -421,7 +420,7 @@
           <!-- List of Recent Folders -->
           <div id="home-recent-folders-list" class="space-y-2">
             <div class="text-center py-6 text-xs text-slate-400">
-              No saved experiment folders yet.<br>Start an analysis above to create your first archive!
+              No saved experiment folders yet.<br>Start an analysis above to save your first experiment!
             </div>
           </div>
         </div>
@@ -1017,19 +1016,6 @@
           </div>
         </div>
 
-        <!-- SINGLE STRIP SPECIAL NOTICE -->
-        <div id="results-single-notice" class="bg-teal-50 border border-teal-200 text-teal-900 rounded-2xl p-3.5 shadow-xs flex items-center justify-between">
-          <div class="flex items-center gap-2.5">
-            <span class="text-xl">📁</span>
-            <div>
-              <div class="text-xs font-bold text-teal-950">Data Stored in Previous Experiments</div>
-              <div class="text-[11px] text-teal-700">All strip chromatograms are saved in your stored data folder.</div>
-            </div>
-          </div>
-          <button id="btn-goto-archives-from-results" class="text-[11px] font-bold bg-white text-teal-700 border border-teal-300 px-2.5 py-1 rounded-lg shadow-2xs">
-            View Stored Data
-          </button>
-        </div>
 
         <!-- Individual Analyzed Strips Section -->
         <div class="space-y-3">
@@ -1054,7 +1040,7 @@
       </div>
 
       <!-- =================================================================== -->
-      <!-- VIEW 6: STORED DATA SCREEN                                          -->
+      <!-- VIEW 6: SAVED EXPERIMENTS SCREEN                                    -->
       <!-- =================================================================== -->
       <div id="view-archives" class="p-4 space-y-4 hidden">
         
@@ -1064,22 +1050,22 @@
             ‹ Back to Home
           </button>
           <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-            Stored Data
+            Saved Experiments
           </span>
         </div>
 
         <!-- Search & Filter Bar -->
         <div class="bg-white border border-slate-200 rounded-2xl p-2.5 shadow-xs flex items-center gap-2">
           <span class="text-sm text-slate-400 pl-1">🔍</span>
-          <input type="text" id="archives-search-input" placeholder="Search by experiment name, analyte, or date..."
+          <input type="text" id="archives-search-input" placeholder="Search saved experiments by name, analyte, or date..."
             class="flex-1 text-xs bg-transparent border-none focus:outline-none text-slate-800">
         </div>
 
         <!-- Global Export Button -->
         <div class="flex justify-between items-center px-1">
-          <span id="archives-total-count" class="text-xs font-bold text-slate-700">0 Stored Folders</span>
+          <span id="archives-total-count" class="text-xs font-bold text-slate-700">0 Saved Experiments</span>
           <button id="archives-export-all-btn" class="text-xs font-bold text-teal-600 hover:text-teal-700 bg-white border border-teal-200 px-3 py-1 rounded-xl shadow-xs">
-            💾 Export All Stored Data
+            💾 Export All Saved
           </button>
         </div>
 
@@ -1429,219 +1415,64 @@
     </div>
   </div>
 
-  <!-- 6. Advanced Themed Export Dialog (Location, Filename, Folder Creation, Multi-format) -->
+  <!-- 6. Simplified Native Save / Export Dialog -->
   <div id="export-options-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 flex flex-col max-h-[92vh] overflow-hidden animate-in fade-in zoom-in duration-200">
+    <div class="bg-white rounded-3xl max-w-sm w-full shadow-2xl border border-slate-100 p-5 space-y-4 animate-in fade-in zoom-in-95 duration-150">
       
       <!-- Modal Header -->
-      <div class="p-4 pb-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
         <div class="flex items-center gap-2.5">
           <div class="w-9 h-9 rounded-xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700 font-bold text-base shadow-2xs">
             💾
           </div>
           <div>
-            <h3 class="text-sm font-bold text-slate-900 leading-tight">Export Experiment Data</h3>
-            <p id="export-modal-subtitle" class="text-[10px] text-slate-500 font-mono mt-0.5">assay_01 • 6 Strips Ready</p>
+            <h3 class="text-sm font-bold text-slate-900 leading-tight">Save Experiment Data</h3>
+            <p id="export-modal-subtitle" class="text-[10px] text-slate-500 font-mono mt-0.5">Assay_01 • Complete Package</p>
           </div>
         </div>
-        <button id="close-export-modal-btn" class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold transition">
+        <button id="close-export-modal-btn" type="button" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center text-xs font-bold transition">
           ✕
         </button>
       </div>
 
-      <!-- Modal Body (Scrollable) -->
-      <div class="p-4 space-y-4 overflow-y-auto text-xs">
-        
-        <!-- Step 1: Save Location & Destination Folder -->
-        <div class="space-y-1.5">
-          <label class="block font-bold text-slate-700 flex items-center justify-between">
-            <span>📁 Save Destination / Folder</span>
-            <button id="export-btn-toggle-new-folder" type="button" class="text-[10px] text-teal-600 hover:text-teal-700 font-bold flex items-center gap-0.5">
-              <span>➕ Make New Folder</span>
-            </button>
-          </label>
-          <div class="flex items-center gap-2">
-            <div class="relative flex-1">
-              <span class="absolute left-3 top-2.5 text-xs">📁</span>
-              <input type="text" id="export-folder-name" value="/storage/emulated/0/Download/LFIA_Reports" placeholder="Choose or enter folder path" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-3 py-2 text-xs font-mono font-medium text-slate-800 focus:outline-teal-500">
-            </div>
-            <button id="btn-open-device-picker" type="button" class="px-3 py-2 bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-700 font-bold rounded-xl text-xs flex items-center gap-1.5 transition active:scale-95 shrink-0 shadow-2xs">
-              <span>📂</span> Choose...
-            </button>
-          </div>
-          <!-- Subfolder creator input (toggleable) -->
-          <div id="export-new-folder-box" class="hidden p-2.5 bg-teal-50/70 border border-teal-200 rounded-xl space-y-1.5">
-            <span class="text-[10px] font-bold text-teal-800 flex items-center gap-1">
-              <span>📁</span> Create Subfolder Inside Destination:
-            </span>
-            <input type="text" id="export-new-subfolder-input" placeholder="e.g. 2026_Replicates" class="w-full bg-white border border-teal-200 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-800 focus:outline-teal-600">
-          </div>
+      <!-- Previous Stored Location Card -->
+      <div id="export-previous-location-box" class="p-3 bg-teal-50/70 border border-teal-200/80 rounded-2xl space-y-1">
+        <div class="text-[10px] font-bold uppercase tracking-wider text-teal-800 flex items-center gap-1">
+          <span>📁</span> Previous Stored Location:
         </div>
-
-        <!-- Step 2: Editable File Name -->
-        <div class="space-y-1.5">
-          <label class="block font-bold text-slate-700">
-            <span>📝 File Name</span>
-          </label>
-          <div class="relative">
-            <input type="text" id="export-filename-input" value="assay_01_Report" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono font-bold text-slate-800 focus:outline-teal-500 pr-24">
-            <span id="export-filename-ext-badge" class="absolute right-2.5 top-1.5 text-[10px] font-bold font-mono px-2 py-0.5 rounded-md bg-slate-200 text-slate-700">
-              .zip
-            </span>
-          </div>
-          <p class="text-[10px] text-slate-400">You can edit the filename above before saving.</p>
+        <div id="export-previous-location-name" class="text-xs font-mono font-bold text-slate-900 truncate">
+          Phone Downloads
         </div>
-
-        <!-- Step 3: Choose File Type to Export -->
-        <div class="space-y-2">
-          <label class="block font-bold text-slate-700">
-            <span>📦 Choose File Type to Export</span>
-          </label>
-          
-          <div class="space-y-2" id="export-type-radio-group">
-            <!-- Option A: ZIP Archive -->
-            <label class="export-type-card flex items-start gap-3 p-3 rounded-2xl border-2 border-teal-600 bg-teal-50/40 cursor-pointer transition relative" data-ext=".zip">
-              <input type="radio" name="export_format" value="zip" checked class="mt-0.5 accent-teal-600">
-              <div class="flex-1">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-slate-900">Complete ZIP Archive</span>
-                  <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-teal-100 text-teal-800 font-mono">.ZIP</span>
-                </div>
-                <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">
-                  Bundles all high-res strip chromatograms, cropped strips, 4PL standard curve, CSV table, and JSON data.
-                </p>
-              </div>
-            </label>
-
-            <!-- Option B: Individual PNG Images -->
-            <label class="export-type-card flex items-start gap-3 p-3 rounded-2xl border border-slate-200 hover:border-slate-300 bg-white cursor-pointer transition relative" data-ext=".png">
-              <input type="radio" name="export_format" value="png" class="mt-0.5 accent-teal-600">
-              <div class="flex-1">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-slate-900">Individual PNG Images</span>
-                  <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono">.PNG</span>
-                </div>
-                <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">
-                  Exports every strip publication figure and the 4PL standard curve as standalone high-resolution images.
-                </p>
-              </div>
-            </label>
-
-            <!-- Option C: Single Strip Analytical PDF -->
-            <label class="export-type-card flex items-start gap-3 p-3 rounded-2xl border border-slate-200 hover:border-slate-300 bg-white cursor-pointer transition relative" data-ext=".pdf">
-              <input type="radio" name="export_format" value="pdf_single" class="mt-0.5 accent-teal-600">
-              <div class="flex-1">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-slate-900">Single Strip PDF Report</span>
-                  <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono">.PDF</span>
-                </div>
-                <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">
-                  Generates an individual analytical report card in PDF format.
-                </p>
-              </div>
-            </label>
-
-            <!-- Option D: Combined All-in-One Multi-Page PDF -->
-            <label class="export-type-card flex items-start gap-3 p-3 rounded-2xl border border-slate-200 hover:border-slate-300 bg-white cursor-pointer transition relative" data-ext=".pdf">
-              <input type="radio" name="export_format" value="pdf_combined" class="mt-0.5 accent-teal-600">
-              <div class="flex-1">
-                <div class="flex items-center justify-between">
-                  <span class="font-bold text-slate-900">Combine Everything in a PDF</span>
-                  <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-800 font-mono">MULTI-PAGE PDF</span>
-                </div>
-                <p class="text-[11px] text-slate-500 mt-0.5 leading-snug">
-                  Merges executive summary, 4PL standard curve, statistics table, and all strip chromatograms into one comprehensive PDF.
-                </p>
-              </div>
-            </label>
-          </div>
-        </div>
-
       </div>
 
-      <!-- Modal Footer -->
-      <div class="p-4 border-t border-slate-100 bg-slate-50/70 flex items-center justify-between gap-3">
-        <button id="cancel-export-modal-btn" type="button" class="w-1/3 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs transition">
-          Cancel
-        </button>
-        <button id="confirm-export-modal-btn" type="button" class="w-2/3 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-95 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5">
-          <span>💾</span>
-          <span id="confirm-export-btn-text">Export & Save</span>
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- 7. Themed Device Storage & Folder Browser Dialog -->
-  <div id="device-folder-browser-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-[60] hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 flex flex-col max-h-[85vh] overflow-hidden animate-in fade-in zoom-in duration-200">
-      
-      <!-- Modal Header -->
-      <div class="p-4 pb-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-700 font-bold text-base shadow-2xs">
-            📁
-          </div>
-          <div>
-            <h3 class="text-sm font-bold text-slate-900 leading-tight">Choose Save Location</h3>
-            <p class="text-[10px] text-slate-500 font-mono mt-0.5">Internal Storage • Device Folders</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <button id="btn-browser-system-picker" type="button" class="px-2.5 py-1 rounded-lg bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-700 font-bold text-[10px] flex items-center gap-1 transition" title="Open Native Android Storage Picker">
-            <span>📱</span> System Picker
+      <!-- Format selector (Compact pills) -->
+      <div class="space-y-1.5">
+        <label class="text-[11px] font-bold text-slate-700 block">Choose File Format:</label>
+        <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+          <button type="button" class="btn-save-format active py-2 px-2.5 rounded-xl border border-teal-500 bg-teal-600 text-white shadow-2xs transition" data-format="zip">
+            📦 ZIP Archive
           </button>
-          <button id="close-folder-browser-btn" type="button" class="w-8 h-8 rounded-full bg-white hover:bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold transition">
-            ✕
+          <button type="button" class="btn-save-format py-2 px-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition" data-format="pdf_combined">
+            📄 Combined PDF
           </button>
         </div>
+        <p class="text-[10px] text-slate-400 leading-tight">Includes CSV summary, raw JSON, standard curve, and strip chromatograms.</p>
       </div>
 
-      <!-- Breadcrumbs Bar -->
-      <div class="px-4 py-2 bg-slate-100/70 border-b border-slate-200/80 flex items-center gap-1.5 overflow-x-auto text-[11px] font-mono text-slate-700" id="browser-breadcrumbs-container">
-        <!-- Rendered dynamically -->
-      </div>
-
-      <!-- Action Sub-bar: Create New Folder & Go Up -->
-      <div class="px-4 py-2 border-b border-slate-100 flex items-center justify-between bg-white text-xs">
-        <button id="btn-browser-create-folder" type="button" class="text-teal-700 hover:text-teal-800 font-bold flex items-center gap-1">
-          <span>➕ Create New Folder Here</span>
+      <!-- Action Buttons -->
+      <div class="space-y-2 pt-1">
+        <!-- Option 1: Save to Previous Stored Location -->
+        <button id="btn-save-to-previous-location" type="button" class="w-full py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition active:scale-95 cursor-pointer">
+          <span>💾</span> Save to Stored Location
         </button>
-        <button id="btn-browser-go-up" type="button" class="text-slate-600 hover:text-slate-900 font-medium flex items-center gap-1">
-          <span>⬆ Up to Parent</span>
+
+        <!-- Option 2: Select New Place (Phone Save As) -->
+        <button id="btn-save-choose-new-place" type="button" class="w-full py-2.5 px-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer">
+          <span>📂</span> Select New Place (Save As...)
         </button>
-      </div>
 
-      <!-- Inline Folder Creator (hidden by default) -->
-      <div id="browser-new-folder-input-box" class="hidden px-4 py-2.5 bg-teal-50/80 border-b border-teal-100 flex items-center gap-2">
-        <input type="text" id="browser-new-folder-name" placeholder="Folder Name (e.g. Assay_2026)" class="flex-1 bg-white border border-teal-300 rounded-lg px-2.5 py-1 text-xs font-mono text-slate-900 focus:outline-teal-600">
-        <button id="btn-browser-confirm-new-folder" type="button" class="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-lg text-xs">
-          Create
-        </button>
-      </div>
-
-      <!-- Folder Directory List (Scrollable) -->
-      <div class="p-3 space-y-1.5 overflow-y-auto flex-1 text-xs" id="browser-folder-list">
-        <!-- Dynamically rendered folder items -->
-      </div>
-
-      <!-- Current Selected Path Bar -->
-      <div class="p-3 bg-slate-50 border-t border-slate-100">
-        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Selected Location:</div>
-        <div class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono font-bold text-teal-800 truncate" id="browser-selected-path-display">
-          /storage/emulated/0/Download/LFIA_Reports
-        </div>
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="p-4 border-t border-slate-100 bg-slate-50/70 flex items-center justify-between gap-3">
-        <button id="cancel-folder-browser-btn" type="button" class="w-1/3 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs transition">
+        <button id="cancel-export-modal-btn" type="button" class="w-full py-1.5 text-slate-400 hover:text-slate-600 font-bold text-xs transition">
           Cancel
-        </button>
-        <button id="confirm-folder-browser-btn" type="button" class="w-2/3 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-95 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5">
-          <span>✔</span>
-          <span>Select This Folder</span>
         </button>
       </div>
 
@@ -1937,20 +1768,24 @@
       const modePill = document.getElementById('nav-mode-pill');
       const backBtn = document.getElementById('nav-back-btn');
 
+      const downloadAppBtn = document.getElementById('nav-download-app-btn');
+
       if (viewName === 'home') {
         if (backBtn) backBtn.classList.add('hidden');
-        if (modePill) modePill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse mr-1"></span><span>Two-Stage AI Active</span>';
+        if (downloadAppBtn) downloadAppBtn.classList.remove('hidden');
+        if (modePill) modePill.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse mr-1 inline-block"></span><span>Two-Stage AI Active</span>';
         renderHomeStatsAndRecent();
       } else {
         if (backBtn) backBtn.classList.remove('hidden');
+        if (downloadAppBtn) downloadAppBtn.classList.add('hidden');
         if (viewName === 'setup') {
-          if (modePill) modePill.textContent = (currentMode === 'lod' ? 'LoD Series Setup' : 'Single Strip Setup');
+          if (modePill) modePill.textContent = (currentMode === 'lod' ? 'LoD Series Setup' : (currentMode === 'unknown' ? 'Unknown Setup' : 'Single Strip Setup'));
         } else if (viewName === 'loader') {
           if (modePill) modePill.textContent = 'Sample Ingestion';
         } else if (viewName === 'results') {
           if (modePill) modePill.textContent = 'Quantification Report';
         } else if (viewName === 'archives') {
-          if (modePill) modePill.textContent = 'Stored Data';
+          if (modePill) modePill.textContent = 'Saved Experiments';
         } else if (viewName === 'camera') {
           if (modePill) modePill.textContent = 'Live Scanner';
         }
@@ -1967,12 +1802,6 @@
       }
       if (themedDialogModal && !themedDialogModal.classList.contains('hidden') && themedDialogModal.style.display !== 'none') {
         closeThemedDialog(false);
-        return true;
-      }
-      const folderBrowserModal = document.getElementById('device-folder-browser-modal');
-      if (folderBrowserModal && !folderBrowserModal.classList.contains('hidden') && folderBrowserModal.style.display !== 'none') {
-        folderBrowserModal.classList.add('hidden');
-        folderBrowserModal.style.display = 'none';
         return true;
       }
       const exportOptionsModal = document.getElementById('export-options-modal');
@@ -5983,7 +5812,7 @@
               title: "Delete Experiment?",
               message: `Are you sure you want to delete '${exp.name || 'this experiment'}'?`,
               detailText: "This will permanently remove this assay and all associated strip chromatograms from local device storage.",
-              confirmText: "Delete Archive",
+              confirmText: "Delete Saved Experiment",
               cancelText: "Cancel",
               isDestructive: true
             });
@@ -6132,21 +5961,23 @@
     });
 
     // =========================================================================
-    // ADVANCED THEMED EXPORT DIALOG CONTROLLER (Multi-Format, Custom Location)
+    // NATIVE SMART SAVE / EXPORT CONTROLLER (Phone Save As, Location Memory)
     // =========================================================================
     let activeExportBundle = null;
-    const exportOptionsModal = document.getElementById('export-options-modal');
-    const exportModalSubtitle = document.getElementById('export-modal-subtitle');
-    const exportFolderNameInput = document.getElementById('export-folder-name');
-    const exportNewFolderBox = document.getElementById('export-new-folder-box');
-    const exportNewSubfolderInput = document.getElementById('export-new-subfolder-input');
-    const exportBtnToggleNewFolder = document.getElementById('export-btn-toggle-new-folder');
-    const exportFilenameInput = document.getElementById('export-filename-input');
-    const exportFilenameExtBadge = document.getElementById('export-filename-ext-badge');
-    const closeExportModalBtn = document.getElementById('close-export-modal-btn');
-    const cancelExportModalBtn = document.getElementById('cancel-export-modal-btn');
-    const confirmExportModalBtn = document.getElementById('confirm-export-modal-btn');
-    const confirmExportBtnText = document.getElementById('confirm-export-btn-text');
+    let selectedExportFormat = 'zip';
+
+    // Format selection buttons
+    document.querySelectorAll('.btn-save-format').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-save-format').forEach(b => {
+          b.classList.remove('active', 'border-teal-500', 'bg-teal-600', 'text-white', 'shadow-2xs');
+          b.classList.add('border-slate-200', 'bg-white', 'text-slate-700');
+        });
+        btn.classList.add('active', 'border-teal-500', 'bg-teal-600', 'text-white', 'shadow-2xs');
+        btn.classList.remove('border-slate-200', 'bg-white', 'text-slate-700');
+        selectedExportFormat = btn.dataset.format || 'zip';
+      });
+    });
 
     function openExportDialog(exp) {
       if (!exp) return;
@@ -6154,35 +5985,34 @@
 
       const modal = document.getElementById('export-options-modal');
       const subtitle = document.getElementById('export-modal-subtitle');
-      const folderInput = document.getElementById('export-folder-name');
-      const filenameInput = document.getElementById('export-filename-input');
-      const newSubfolderInput = document.getElementById('export-new-subfolder-input');
-      const newFolderBox = document.getElementById('export-new-folder-box');
+      const prevLocBox = document.getElementById('export-previous-location-box');
+      const prevLocName = document.getElementById('export-previous-location-name');
+      const btnSavePrev = document.getElementById('btn-save-to-previous-location');
+      const btnChooseNew = document.getElementById('btn-save-choose-new-place');
 
       const stripCount = (exp.strips && Array.isArray(exp.strips)) ? exp.strips.length : 0;
       if (subtitle) {
         subtitle.textContent = `${exp.name || 'Experiment'} • ${stripCount} Strip${stripCount === 1 ? '' : 's'} Ready`;
       }
-      
-      const safeExpName = (exp.name || 'assay_01').replace(/[^a-zA-Z0-9_-]/g, '_');
-      if (folderInput) {
-        folderInput.value = `/storage/emulated/0/Download/${safeExpName}_export`;
-      }
-      if (filenameInput) {
-        filenameInput.value = `${safeExpName}_Report`;
-      }
-      if (newSubfolderInput) {
-        newSubfolderInput.value = '';
-      }
-      if (newFolderBox) {
-        newFolderBox.classList.add('hidden');
-      }
 
-      // Default format: ZIP
-      const zipRadio = document.querySelector('input[name="export_format"][value="zip"]');
-      if (zipRadio) zipRadio.checked = true;
-      if (typeof updateExportCardSelection === 'function') {
-        updateExportCardSelection('.zip');
+      // Check for previously saved location
+      const storedLocation = localStorage.getItem('rapidquant_last_save_location');
+      if (storedLocation) {
+        if (prevLocBox) prevLocBox.classList.remove('hidden');
+        if (prevLocName) prevLocName.textContent = storedLocation;
+        if (btnSavePrev) {
+          btnSavePrev.classList.remove('hidden');
+          btnSavePrev.innerHTML = `<span>💾</span> Save to Stored Location`;
+        }
+        if (btnChooseNew) {
+          btnChooseNew.innerHTML = `<span>📂</span> Select New Place (Save As...)`;
+        }
+      } else {
+        if (prevLocBox) prevLocBox.classList.add('hidden');
+        if (btnSavePrev) btnSavePrev.classList.add('hidden');
+        if (btnChooseNew) {
+          btnChooseNew.innerHTML = `<span>📂</span> Choose Place on Phone (Save As...)`;
+        }
       }
 
       if (modal) {
@@ -6198,635 +6028,305 @@
         modal.style.display = 'none';
       }
       activeExportBundle = null;
-      if (confirmExportBtnText) confirmExportBtnText.textContent = "Export & Save";
-      if (confirmExportModalBtn) confirmExportModalBtn.disabled = false;
     }
 
-    if (closeExportModalBtn) closeExportModalBtn.addEventListener('click', closeExportDialog);
-    if (cancelExportModalBtn) cancelExportModalBtn.addEventListener('click', closeExportDialog);
+    const closeExportBtn = document.getElementById('close-export-modal-btn');
+    if (closeExportBtn) closeExportBtn.addEventListener('click', closeExportDialog);
 
-    // Toggle Make New Folder Subfolder Box
-    if (exportBtnToggleNewFolder) {
-      exportBtnToggleNewFolder.addEventListener('click', () => {
-        if (exportNewFolderBox) {
-          exportNewFolderBox.classList.toggle('hidden');
-          if (!exportNewFolderBox.classList.contains('hidden') && exportNewSubfolderInput) {
-            exportNewSubfolderInput.focus();
-          }
-        }
+    const cancelExportBtn = document.getElementById('cancel-export-modal-btn');
+    if (cancelExportBtn) cancelExportBtn.addEventListener('click', closeExportDialog);
+
+    // Button: Save to Stored Location
+    const btnSavePrevLoc = document.getElementById('btn-save-to-previous-location');
+    if (btnSavePrevLoc) {
+      btnSavePrevLoc.addEventListener('click', () => {
+        executeExperimentExport(activeExportBundle, selectedExportFormat, false);
       });
     }
 
-    // Format selection cards click listener
-    function updateExportCardSelection(ext) {
-      document.querySelectorAll('.export-type-card').forEach(card => {
-        const isSelected = card.dataset.ext === ext || (ext === '.pdf' && card.querySelector('input') && card.querySelector('input').checked);
-        if (isSelected) {
-          card.classList.add('border-2', 'border-teal-600', 'bg-teal-50/40');
-          card.classList.remove('border-slate-200');
-        } else {
-          card.classList.remove('border-2', 'border-teal-600', 'bg-teal-50/40');
-          card.classList.add('border-slate-200');
-        }
+    // Button: Select New Place (Opens Phone Save As option)
+    const btnSaveChooseNew = document.getElementById('btn-save-choose-new-place');
+    if (btnSaveChooseNew) {
+      btnSaveChooseNew.addEventListener('click', () => {
+        executeExperimentExport(activeExportBundle, selectedExportFormat, true);
       });
-      if (exportFilenameExtBadge) {
-        exportFilenameExtBadge.textContent = ext;
-      }
     }
 
-    document.querySelectorAll('.export-type-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const radio = card.querySelector('input[type="radio"]');
-        if (radio) {
-          radio.checked = true;
-          updateExportCardSelection(card.dataset.ext);
-        }
-      });
-    });
+    // Helper: Build ZIP blob containing CSV, JSON, PNGs, and standard curve
+    async function buildExperimentZipBlob(exp, safeExpName) {
+      if (typeof JSZip === 'undefined') throw new Error("JSZip library not available");
+      const zip = new JSZip();
 
-    window.openExportDialog = openExportDialog;
-    window.closeExportDialog = closeExportDialog;
-
-    // =========================================================================
-    // THEMED DEVICE STORAGE & FOLDER BROWSER CONTROLLER
-    // =========================================================================
-    const folderBrowserModal = document.getElementById('device-folder-browser-modal');
-    const browserBreadcrumbsContainer = document.getElementById('browser-breadcrumbs-container');
-    const browserFolderList = document.getElementById('browser-folder-list');
-    const browserSelectedPathDisplay = document.getElementById('browser-selected-path-display');
-    const browserNewFolderInputBox = document.getElementById('browser-new-folder-input-box');
-    const browserNewFolderName = document.getElementById('browser-new-folder-name');
-    const btnOpenDevicePicker = document.getElementById('btn-open-device-picker');
-    const closeFolderBrowserBtn = document.getElementById('close-folder-browser-btn');
-    const cancelFolderBrowserBtn = document.getElementById('cancel-folder-browser-btn');
-    const confirmFolderBrowserBtn = document.getElementById('confirm-folder-browser-btn');
-    const btnBrowserCreateFolder = document.getElementById('btn-browser-create-folder');
-    const btnBrowserConfirmNewFolder = document.getElementById('btn-browser-confirm-new-folder');
-    const btnBrowserGoUp = document.getElementById('btn-browser-go-up');
-    const btnBrowserSystemPicker = document.getElementById('btn-browser-system-picker');
-
-    // Virtual Device Storage Directory Tree
-    const virtualStorageRoot = {
-      name: "Internal Storage",
-      path: "/storage/emulated/0",
-      subfolders: [
-        {
-          name: "Download",
-          path: "/storage/emulated/0/Download",
-          desc: "Default device downloads directory",
-          subfolders: [
-            { name: "LFIA_Reports", path: "/storage/emulated/0/Download/LFIA_Reports", desc: "Immunoassay quantification reports", subfolders: [] },
-            { name: "Assays_2026", path: "/storage/emulated/0/Download/Assays_2026", desc: "Batch test calibrations", subfolders: [] }
-          ]
-        },
-        {
-          name: "Documents",
-          path: "/storage/emulated/0/Documents",
-          desc: "Documents & laboratory records",
-          subfolders: [
-            { name: "LFIA_Data", path: "/storage/emulated/0/Documents/LFIA_Data", desc: "Analytical datasets", subfolders: [] }
-          ]
-        },
-        {
-          name: "DCIM",
-          path: "/storage/emulated/0/DCIM",
-          desc: "Camera images & strip scans",
-          subfolders: [
-            { name: "Camera", path: "/storage/emulated/0/DCIM/Camera", desc: "Raw camera photos", subfolders: [] },
-            { name: "LFIA_Strips", path: "/storage/emulated/0/DCIM/LFIA_Strips", desc: "Cropped strip captures", subfolders: [] }
-          ]
-        },
-        {
-          name: "LFIA_Assays",
-          path: "/storage/emulated/0/LFIA_Assays",
-          desc: "Dedicated LFIA Quantification folder",
-          subfolders: [
-            { name: "Calibration_Curves", path: "/storage/emulated/0/LFIA_Assays/Calibration_Curves", desc: "4PL standard curves", subfolders: [] }
-          ]
-        },
-        {
-          name: "Pictures",
-          path: "/storage/emulated/0/Pictures",
-          desc: "Saved plots & figures",
-          subfolders: []
-        }
-      ]
-    };
-
-    let folderNavStack = [virtualStorageRoot, virtualStorageRoot.subfolders[0]]; // Start in Download/
-    let currentNavFolder = virtualStorageRoot.subfolders[0];
-    let selectedBrowserPath = "/storage/emulated/0/Download/LFIA_Reports";
-
-    function renderFolderBrowser() {
-      currentNavFolder = folderNavStack[folderNavStack.length - 1];
-      
-      // 1. Breadcrumbs
-      browserBreadcrumbsContainer.innerHTML = '';
-      folderNavStack.forEach((f, idx) => {
-        if (idx > 0) {
-          const sep = document.createElement('span');
-          sep.className = 'text-slate-400';
-          sep.textContent = '›';
-          browserBreadcrumbsContainer.appendChild(sep);
-        }
-        const chip = document.createElement('button');
-        chip.type = 'button';
-        chip.className = `px-2 py-0.5 rounded-md hover:bg-slate-200 transition ${idx === folderNavStack.length - 1 ? 'font-bold text-teal-800 bg-teal-50 border border-teal-200' : 'text-slate-600'}`;
-        chip.textContent = idx === 0 ? '🏠 Storage' : f.name;
-        chip.addEventListener('click', () => {
-          folderNavStack = folderNavStack.slice(0, idx + 1);
-          renderFolderBrowser();
+      // 1. CSV Summary Text
+      let csvRawText = "Experiment Name,Date,Mode,Analyte Capture,Detection Molecule\n";
+      csvRawText += `\"${exp.name}\",\"${exp.date || ''}\",\"${exp.mode || ''}\",\"${exp.captureMolecule || ''}\",\"${exp.detectionMolecule || ''}\"\n\n`;
+      csvRawText += "Strip Index,File Name,Assigned Conc,Calculated Conc,Status,T/C Ratio,C Area,T Area\n";
+      if (exp.strips) {
+        exp.strips.forEach((s, idx) => {
+          csvRawText += `${idx + 1},\"${s.fileName || ''}\",${s.assignedConc || 0},${s.calculatedConc || 0},\"${s.status || ''}\",${s.tcRatio || 0},${s.cArea || 0},${s.tArea || 0}\n`;
         });
-        browserBreadcrumbsContainer.appendChild(chip);
-      });
+      }
+      if (exp.lodCalibration) {
+        csvRawText += `\nLoD Calibration Metrics:\n`;
+        csvRawText += `LoD Concentration (${exp.unit || 'ng/mL'}),${exp.lodCalibration.lod_conc || 0}\n`;
+        csvRawText += `LoB Signal (a.u.),${exp.lodCalibration.lob_signal || 0}\n`;
+        csvRawText += `Model Fit Goodness (R^2),${exp.lodCalibration.r_squared || 0}\n`;
+      }
+      zip.file(`${safeExpName}_Analytical_Summary.csv`, csvRawText);
 
-      // 2. Folder List
-      browserFolderList.innerHTML = '';
-      const subs = currentNavFolder.subfolders || [];
-      if (subs.length === 0) {
-        browserFolderList.innerHTML = `
-          <div class="text-center py-8 text-slate-400">
-            <span class="text-2xl block mb-1">📂</span>
-            <span class="text-xs">This folder is empty.</span><br>
-            <span class="text-[10px]">Tap 'Create New Folder Here' above to add a subfolder.</span>
-          </div>
-        `;
-      } else {
-        subs.forEach(sub => {
-          const isSelected = selectedBrowserPath === sub.path;
-          const item = document.createElement('div');
-          item.className = `p-3 rounded-2xl border transition cursor-pointer flex items-center justify-between ${isSelected ? 'bg-teal-50/70 border-teal-500 shadow-2xs' : 'bg-white border-slate-200 hover:border-slate-300'}`;
-          item.innerHTML = `
-            <div class="flex items-center gap-3 flex-1 min-w-0">
-              <div class="w-9 h-9 rounded-xl ${isSelected ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-700'} flex items-center justify-center text-sm font-bold shrink-0">
-                📁
-              </div>
-              <div class="min-w-0 flex-1">
-                <div class="font-bold text-slate-900 truncate">${sub.name}/</div>
-                <div class="text-[10px] text-slate-500 truncate">${sub.desc || `${sub.subfolders ? sub.subfolders.length : 0} items`}</div>
-              </div>
-            </div>
-            <div class="flex items-center gap-2">
-              <button type="button" class="btn-open-sub text-teal-600 hover:text-teal-700 text-xs font-bold px-2 py-1 rounded-lg hover:bg-teal-50 transition" title="Open Subfolder">
-                Open ›
-              </button>
-            </div>
-          `;
+      // 2. Full JSON Dataset
+      zip.file(`${safeExpName}_Full_Dataset.json`, JSON.stringify(exp, null, 2));
 
-          // Clicking row selects this folder path
-          item.addEventListener('click', (e) => {
-            if (e.target.closest('.btn-open-sub')) {
-              folderNavStack.push(sub);
-              selectedBrowserPath = sub.path;
-              browserSelectedPathDisplay.textContent = selectedBrowserPath;
-              renderFolderBrowser();
-            } else {
-              selectedBrowserPath = sub.path;
-              browserSelectedPathDisplay.textContent = selectedBrowserPath;
-              renderFolderBrowser();
+      // 3. 4PL / 5PL Standard Curve Plot if present
+      if (exp.lodCalibration && exp.lodCalibration.lod_plot) {
+        const parts = exp.lodCalibration.lod_plot.split(',');
+        if (parts.length > 1) {
+          zip.file(`${safeExpName}_Standard_Curve.png`, parts[1], { base64: true });
+        }
+      }
+
+      // 4. Individual Strip Chromatograms & Cropped Images
+      if (exp.strips && Array.isArray(exp.strips)) {
+        exp.strips.forEach((s, idx) => {
+          const sName = (s.fileName || `Strip_${idx + 1}`).replace(/[^a-zA-Z0-9_-]/g, '_');
+          if (s.publicationPlot) {
+            const parts = s.publicationPlot.split(',');
+            if (parts.length > 1) {
+              zip.file(`Strip_${idx + 1}_${sName}_Chromatogram.png`, parts[1], { base64: true });
             }
-          });
-
-          browserFolderList.appendChild(item);
+          }
+          if (s.croppedImage) {
+            const parts = s.croppedImage.split(',');
+            if (parts.length > 1) {
+              zip.file(`Strip_${idx + 1}_${sName}_Cropped.jpg`, parts[1], { base64: true });
+            }
+          }
         });
       }
 
-      // Update Path display
-      browserSelectedPathDisplay.textContent = selectedBrowserPath;
-      browserNewFolderInputBox.classList.add('hidden');
+      return await zip.generateAsync({ type: 'blob' });
     }
 
-    if (btnOpenDevicePicker) {
-      btnOpenDevicePicker.addEventListener('click', () => {
-        const folderInput = document.getElementById('export-folder-name');
-        selectedBrowserPath = (folderInput && folderInput.value) ? folderInput.value : "/storage/emulated/0/Download/LFIA_Reports";
-        renderFolderBrowser();
-        const browserModal = document.getElementById('device-folder-browser-modal');
-        if (browserModal) {
-          browserModal.classList.remove('hidden');
-          browserModal.style.display = 'flex';
+    // Helper: Build Combined Multi-Page PDF blob using jsPDF
+    async function buildExperimentPdfBlob(exp, safeExpName) {
+      if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("jsPDF library not available");
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      // Page 1: Study Summary & Standard Curve
+      doc.setFillColor(13, 148, 136); // Teal 600
+      doc.rect(0, 0, 210, 24, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.text('RAPIDQUANT — STUDY QUANTIFICATION REPORT', 14, 15);
+
+      doc.setTextColor(30, 41, 59);
+      doc.setFontSize(9.5);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Experiment Name: ${exp.name}`, 14, 32);
+      doc.text(`Date: ${exp.date || new Date().toISOString().slice(0, 10)}   |   Mode: ${exp.mode || 'LFIA Analysis'}`, 14, 38);
+      doc.text(`Total Strips Analyzed: ${exp.strips ? exp.strips.length : 0}`, 14, 44);
+
+      let nextY = 50;
+      if (exp.lodCalibration) {
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Analytical Limits & Model Calibration:`, 14, nextY);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`• Fit Goodness (R²): ${exp.lodCalibration.r_squared || 'N/A'}`, 18, nextY + 6);
+        doc.text(`• Limit of Detection (LoD): ${exp.lodCalibration.lod_conc || 'N/A'} ${exp.unit || 'ng/mL'}`, 18, nextY + 11);
+        doc.text(`• Limit of Blank (LoB Signal): ${exp.lodCalibration.lob_signal || 'N/A'} a.u.`, 18, nextY + 16);
+        nextY += 22;
+
+        if (exp.lodCalibration.lod_plot) {
+          doc.addImage(exp.lodCalibration.lod_plot, 'PNG', 25, nextY, 160, 115);
+          nextY += 120;
         }
-      });
+      }
+
+      // Summary Table
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.text('Summary Results Table:', 14, nextY + 4);
+      doc.setFillColor(241, 245, 249);
+      doc.rect(14, nextY + 6, 182, 7, 'F');
+      doc.text('#', 16, nextY + 11);
+      doc.text('Sample Filename', 25, nextY + 11);
+      doc.text('Assigned', 85, nextY + 11);
+      doc.text('T/C Ratio', 115, nextY + 11);
+      doc.text('C Area', 145, nextY + 11);
+      doc.text('Status', 170, nextY + 11);
+
+      doc.setFont('helvetica', 'normal');
+      let tableY = nextY + 18;
+      if (exp.strips) {
+        exp.strips.slice(0, 7).forEach((s, i) => {
+          doc.text(String(i + 1), 16, tableY);
+          doc.text(String(s.fileName || '').slice(0, 24), 25, tableY);
+          doc.text(`${s.assignedConc || 0} ${s.assignedUnit || exp.unit || 'ng/mL'}`, 85, tableY);
+          doc.text(Number(s.tcRatio || 0).toFixed(4), 115, tableY);
+          doc.text(Number(s.cArea || 0).toFixed(1), 145, tableY);
+          doc.text(String(s.status || 'Done'), 170, tableY);
+          tableY += 6;
+        });
+      }
+
+      // Subsequent Pages: Individual Strip Chromatograms
+      if (exp.strips) {
+        exp.strips.forEach((s, idx) => {
+          doc.addPage();
+          doc.setFillColor(15, 118, 110);
+          doc.rect(0, 0, 210, 18, 'F');
+          doc.setTextColor(255, 255, 255);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(11);
+          doc.text(`STRIP #${idx + 1}: ${s.fileName || ''}`, 14, 12);
+
+          doc.setTextColor(30, 41, 59);
+          doc.setFontSize(9.5);
+          doc.text(`T/C Ratio: ${Number(s.tcRatio || 0).toFixed(4)}   |   Status: ${s.status || ''}`, 14, 25);
+          doc.text(`Assigned: ${s.assignedConc || 0} ${s.assignedUnit || exp.unit || 'ng/mL'}   |   C Area: ${Number(s.cArea || 0).toFixed(1)}   |   T Area: ${Number(s.tArea || 0).toFixed(1)}`, 14, 31);
+
+          if (s.publicationPlot) {
+            doc.addImage(s.publicationPlot, 'PNG', 12, 38, 186, 92);
+          }
+
+          if (s.croppedImage) {
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.text('Cropped Strip Cassette Scan:', 14, 140);
+            doc.addImage(s.croppedImage, 'JPEG', 85, 145, 40, 135);
+          }
+        });
+      }
+
+      return doc.output('blob');
     }
 
-    if (exportFolderNameInput) {
-      exportFolderNameInput.addEventListener('click', () => {
-        if (btnOpenDevicePicker) btnOpenDevicePicker.click();
-      });
-    }
+    // Master Export Execution: handles Phone Save As, Storage, and Location Memory
+    async function executeExperimentExport(exp, format, isChoosingNewPlace) {
+      if (!exp) return;
+      const safeExpName = (exp.name || 'assay_01').replace(/[^a-zA-Z0-9_-]/g, '_');
+      const ext = format === 'pdf_combined' ? '.pdf' : '.zip';
+      const filename = `${safeExpName}_Report${ext}`;
 
-    if (closeFolderBrowserBtn) {
-      closeFolderBrowserBtn.addEventListener('click', () => {
-        const browserModal = document.getElementById('device-folder-browser-modal');
-        if (browserModal) {
-          browserModal.classList.add('hidden');
-          browserModal.style.display = 'none';
+      showAppLoader(`Packaging ${filename}...`);
+
+      try {
+        let blob = null;
+        if (format === 'pdf_combined') {
+          blob = await buildExperimentPdfBlob(exp, safeExpName);
+        } else {
+          blob = await buildExperimentZipBlob(exp, safeExpName);
         }
-      });
-    }
-    if (cancelFolderBrowserBtn) {
-      cancelFolderBrowserBtn.addEventListener('click', () => {
-        const browserModal = document.getElementById('device-folder-browser-modal');
-        if (browserModal) {
-          browserModal.classList.add('hidden');
-          browserModal.style.display = 'none';
-        }
-      });
-    }
+        hideAppLoader();
 
-    if (btnBrowserGoUp) {
-      btnBrowserGoUp.addEventListener('click', () => {
-        if (folderNavStack.length > 1) {
-          folderNavStack.pop();
-          selectedBrowserPath = folderNavStack[folderNavStack.length - 1].path;
-          renderFolderBrowser();
-        }
-      });
-    }
+        if (!blob) throw new Error("Failed to create export file data.");
 
-    if (btnBrowserCreateFolder) {
-      btnBrowserCreateFolder.addEventListener('click', () => {
-        browserNewFolderInputBox.classList.toggle('hidden');
-        if (!browserNewFolderInputBox.classList.contains('hidden')) {
-          browserNewFolderName.focus();
-        }
-      });
-    }
+        let finalSavedLocation = localStorage.getItem('rapidquant_last_save_location') || 'Phone Downloads';
 
-    if (btnBrowserConfirmNewFolder) {
-      btnBrowserConfirmNewFolder.addEventListener('click', () => {
-        const name = browserNewFolderName.value.trim().replace(/[^a-zA-Z0-9_-]/g, '_');
-        if (!name) return;
-        const newPath = `${currentNavFolder.path}/${name}`;
-        const newFolderObj = {
-          name: name,
-          path: newPath,
-          desc: "User created folder",
-          subfolders: []
-        };
-        currentNavFolder.subfolders = currentNavFolder.subfolders || [];
-        currentNavFolder.subfolders.push(newFolderObj);
-        selectedBrowserPath = newPath;
-        browserNewFolderName.value = '';
-        renderFolderBrowser();
-      });
-    }
+        if (isChoosingNewPlace) {
+          let saved = false;
 
-    if (confirmFolderBrowserBtn) {
-      confirmFolderBrowserBtn.addEventListener('click', () => {
-        const folderInput = document.getElementById('export-folder-name');
-        if (folderInput) folderInput.value = selectedBrowserPath;
-        const browserModal = document.getElementById('device-folder-browser-modal');
-        if (browserModal) {
-          browserModal.classList.add('hidden');
-          browserModal.style.display = 'none';
-        }
-      });
-    }
-
-    // Native Android / Desktop System Picker integration
-    if (btnBrowserSystemPicker) {
-      btnBrowserSystemPicker.addEventListener('click', async () => {
-        if (window.AndroidAssetBridge && typeof window.AndroidAssetBridge.pickFolder === 'function') {
-          window.AndroidAssetBridge.pickFolder();
-        } else if (typeof window.showDirectoryPicker === 'function') {
-          try {
-            const dirHandle = await window.showDirectoryPicker();
-            if (dirHandle && dirHandle.name) {
-              const fullDir = `/Macintosh HD/Users/${dirHandle.name}`;
-              selectedBrowserPath = fullDir;
-              if (exportFolderNameInput) exportFolderNameInput.value = fullDir;
-              if (folderBrowserModal) {
-                folderBrowserModal.classList.add('hidden');
-                folderBrowserModal.style.display = 'none';
+          // 1. Native File System Access API (showSaveFilePicker)
+          if (typeof window.showSaveFilePicker === 'function') {
+            try {
+              const fileHandle = await window.showSaveFilePicker({
+                suggestedName: filename,
+                types: [{
+                  description: format === 'pdf_combined' ? 'PDF Report' : 'ZIP Archive',
+                  accept: format === 'pdf_combined' ? { 'application/pdf': ['.pdf'] } : { 'application/zip': ['.zip'] }
+                }]
+              });
+              if (fileHandle) {
+                const writable = await fileHandle.createWritable();
+                await writable.write(blob);
+                await writable.close();
+                saved = true;
+                finalSavedLocation = fileHandle.name || 'Device Storage';
+                localStorage.setItem('rapidquant_last_save_location', finalSavedLocation);
               }
-              showThemedAlert({
-                title: "Folder Selected",
-                message: `Folder '${dirHandle.name}' selected from Mac Finder.`,
-                detailText: `📂 ${fullDir}\nPath loaded into export destination.`,
-                type: "success"
-              });
+            } catch (pickerErr) {
+              if (pickerErr.name === 'AbortError') {
+                return; // User cancelled picker
+              }
+              console.warn("showSaveFilePicker fallback:", pickerErr);
             }
-          } catch (e) {
-            // User cancelled Finder picker
-          }
-        } else {
-          showThemedAlert({
-            title: "Storage Picker",
-            message: "Native storage picker guide:",
-            detailText: "• On Android devices, this opens the native system folder picker.\n• On Desktop browsers, browse and create folders in the directory tree below.",
-            type: "info"
-          });
-        }
-      });
-    }
-
-    // Native Android callback for native picker
-    window.onNativeFolderSelected = function(nativePath) {
-      if (nativePath) {
-        selectedBrowserPath = nativePath;
-        if (exportFolderNameInput) exportFolderNameInput.value = nativePath;
-        if (folderBrowserModal) {
-          folderBrowserModal.classList.add('hidden');
-          folderBrowserModal.style.display = 'none';
-        }
-        showThemedAlert({
-          title: "Directory Loaded",
-          message: "Device folder loaded into export destination.",
-          detailText: `📂 ${nativePath}\nReady to export assay data.`,
-          type: "success"
-        });
-      }
-    };
-
-    // Main Export Execution
-    if (confirmExportModalBtn) {
-      confirmExportModalBtn.addEventListener('click', async () => {
-        if (!activeExportBundle) return;
-        const exp = activeExportBundle;
-
-        const folderPath = exportFolderNameInput.value.trim() || '/storage/emulated/0/Download/LFIA_Reports';
-        const subfolder = exportNewSubfolderInput.value.trim();
-        const baseName = exportFilenameInput.value.trim() || `${exp.name}_Report`;
-        const format = document.querySelector('input[name="export_format"]:checked').value;
-
-        const fullTargetDir = subfolder ? `${folderPath}/${subfolder}` : folderPath;
-
-        confirmExportBtnText.textContent = "Exporting...";
-        confirmExportModalBtn.disabled = true;
-
-        try {
-          // Generate CSV text
-          let csvRawText = "Experiment Name,Date,Mode,Analyte Capture,Detection Molecule\n";
-          csvRawText += `"${exp.name}","${exp.date}","${exp.mode}","${exp.captureMolecule || ''}","${exp.detectionMolecule || ''}"\n\n`;
-          csvRawText += "Strip Index,File Name,Assigned Conc,Calculated Conc,Status,T/C Ratio,C Area,T Area\n";
-          if (exp.strips) {
-            exp.strips.forEach((s, idx) => {
-              csvRawText += `${idx + 1},"${s.fileName}",${s.assignedConc},${s.calculatedConc},${s.status},${s.tcRatio},${s.cArea},${s.tArea}\n`;
-            });
-          }
-          if (exp.lodCalibration) {
-            csvRawText += `\nLoD Calibration Metrics:\n`;
-            csvRawText += `LoD Concentration (${exp.unit}),${exp.lodCalibration.lod_conc}\n`;
-            csvRawText += `LoB Signal (a.u.),${exp.lodCalibration.lob_signal}\n`;
-            csvRawText += `4PL Goodness of Fit (R^2),${exp.lodCalibration.r_squared}\n`;
           }
 
-          if (format === 'zip') {
-            // =========================================================
-            // FORMAT A: COMPLETE ZIP ARCHIVE (JSZip)
-            // =========================================================
-            if (typeof JSZip === 'undefined') throw new Error("JSZip library not available");
-            const zip = new JSZip();
-            const root = zip.folder(fullTargetDir);
-
-            // Add CSV & JSON
-            root.file(`${baseName}_Analytical_Summary.csv`, csvRawText);
-            root.file(`${baseName}_Full_Dataset.json`, JSON.stringify(exp, null, 2));
-
-            // Add 4PL Calibration Curve Plot if present
-            if (exp.lodCalibration && exp.lodCalibration.lod_plot) {
-              const b64Plot = exp.lodCalibration.lod_plot.split(',')[1];
-              root.file(`${baseName}_Standard_Curve_4PL.png`, b64Plot, { base64: true });
+          // 2. Web Share API (native share/save sheet on iOS / Android)
+          if (!saved && navigator.canShare && typeof navigator.share === 'function') {
+            try {
+              const file = new File([blob], filename, { type: blob.type });
+              if (navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                  files: [file],
+                  title: filename,
+                  text: `RapidQuant analytical report: ${filename}`
+                });
+                saved = true;
+                finalSavedLocation = 'Phone Files / Saved Location';
+                localStorage.setItem('rapidquant_last_save_location', finalSavedLocation);
+              }
+            } catch (shareErr) {
+              if (shareErr.name === 'AbortError') return;
             }
+          }
 
-            // Add Strip Chromatograms & Cropped Images
-            if (exp.strips) {
-              exp.strips.forEach((s, idx) => {
-                const sName = (s.fileName || `Strip_${idx + 1}`).replace(/[^a-zA-Z0-9_-]/g, '_');
-                if (s.publicationPlot) {
-                  const b64 = s.publicationPlot.split(',')[1];
-                  root.file(`Strip_${idx + 1}_${sName}_Chromatogram.png`, b64, { base64: true });
-                }
-                if (s.croppedImage) {
-                  const b64c = s.croppedImage.split(',')[1];
-                  root.file(`Strip_${idx + 1}_${sName}_Cropped.jpg`, b64c, { base64: true });
-                }
-              });
-            }
-
-            const zipBlob = await zip.generateAsync({ type: 'blob' });
-            const blobUrl = URL.createObjectURL(zipBlob);
+          // 3. Fallback: Browser download trigger
+          if (!saved) {
+            const blobUrl = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = blobUrl;
-            a.download = `${baseName}.zip`;
+            a.download = filename;
             document.body.appendChild(a);
             a.click();
             a.remove();
             setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-
-            await showThemedAlert({
-              title: "Export Complete!",
-              message: `Saved '${baseName}.zip' into folder:`,
-              detailText: `📂 ${fullTargetDir}/\n✓ All strip chromatograms, 4PL standard curve, CSV table, and JSON data included.`,
-              type: "success",
-              buttonText: "OK, Done"
-            });
-
-          } else if (format === 'png') {
-            // =========================================================
-            // FORMAT B: INDIVIDUAL PNG IMAGES
-            // =========================================================
-            if (exp.lodCalibration && exp.lodCalibration.lod_plot) {
-              downloadImage(exp.lodCalibration.lod_plot, `${baseName}_Standard_Curve.png`);
-            }
-            if (exp.strips) {
-              exp.strips.forEach((s, idx) => {
-                const sName = (s.fileName || `Strip_${idx + 1}`).replace(/[^a-zA-Z0-9_-]/g, '_');
-                if (s.publicationPlot) {
-                  downloadImage(s.publicationPlot, `${baseName}_Strip_${idx + 1}_${sName}.png`);
-                }
-              });
-            }
-            await showThemedAlert({
-              title: "Export Complete!",
-              message: "Saved individual publication PNG images successfully.",
-              detailText: `📂 ${fullTargetDir}/\n✓ High-resolution strip chromatograms & 4PL standard curve saved.`,
-              type: "success",
-              buttonText: "OK, Done"
-            });
-
-          } else if (format === 'pdf_single') {
-            // =========================================================
-            // FORMAT C: SINGLE STRIP PDF REPORT (jsPDF)
-            // =========================================================
-            if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("jsPDF library not available");
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-            // Header Banner
-            doc.setFillColor(13, 148, 136); // Teal 600
-            doc.rect(0, 0, 210, 24, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(13);
-            doc.text('RAPIDQUANT — LFIA QUANTIFICATION REPORT', 14, 15);
-
-            const targetStrip = (exp.strips && exp.strips.length > 0) ? exp.strips[0] : null;
-
-            doc.setTextColor(30, 41, 59);
-            doc.setFontSize(10);
-            doc.setFont('helvetica', 'normal');
-            doc.text(`Experiment: ${exp.name}   |   Date: ${exp.date || new Date().toISOString().slice(0, 10)}`, 14, 32);
-            
-            if (targetStrip) {
-              doc.setFont('helvetica', 'bold');
-              doc.text(`Analyzed Strip: ${targetStrip.fileName}`, 14, 40);
-              doc.setFont('helvetica', 'normal');
-              doc.text(`T/C Ratio: ${targetStrip.tcRatio.toFixed(4)}   |   Status: ${targetStrip.status}`, 14, 46);
-              doc.text(`Assigned Conc: ${targetStrip.assignedConc} ${targetStrip.assignedUnit || exp.unit}   |   Calculated: ${targetStrip.calculatedConc.toFixed(3)} ${exp.unit}`, 14, 52);
-              doc.text(`Control Line (C Area): ${targetStrip.cArea.toFixed(1)}   |   Test Line (T Area): ${targetStrip.tArea.toFixed(1)}`, 14, 58);
-
-              if (targetStrip.publicationPlot) {
-                doc.addImage(targetStrip.publicationPlot, 'PNG', 12, 66, 186, 92);
-              }
-              if (targetStrip.croppedImage) {
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(9);
-                doc.text('Cassette Nitrocellulose Scan:', 14, 168);
-                doc.addImage(targetStrip.croppedImage, 'JPEG', 85, 172, 40, 115);
-              }
-            } else {
-              doc.text('No individual strip data available.', 14, 40);
-            }
-
-            doc.save(`${baseName}.pdf`);
-            await showThemedAlert({
-              title: "Export Complete!",
-              message: `Saved '${baseName}.pdf' analytical report successfully.`,
-              detailText: `📂 ${fullTargetDir}/`,
-              type: "success",
-              buttonText: "OK, Done"
-            });
-
-          } else if (format === 'pdf_combined') {
-            // =========================================================
-            // FORMAT D: COMBINED ALL-IN-ONE MULTI-PAGE PDF (jsPDF)
-            // =========================================================
-            if (!window.jspdf || !window.jspdf.jsPDF) throw new Error("jsPDF library not available");
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-            // --- PAGE 1: Executive Calibration & Study Summary ---
-            doc.setFillColor(13, 148, 136); // Teal 600
-            doc.rect(0, 0, 210, 24, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(13);
-            doc.text('RAPIDQUANT — COMPLETE STUDY REPORT (CLSI EP17-A2)', 14, 15);
-
-            doc.setTextColor(30, 41, 59);
-            doc.setFontSize(9.5);
-            doc.setFont('helvetica', 'normal');
-            doc.text(`Experiment Name: ${exp.name}`, 14, 32);
-            doc.text(`Date: ${exp.date || new Date().toISOString().slice(0, 10)}   |   Mode: ${exp.mode === 'lod' ? 'LoD Calibration Assay' : 'Single Strip Routine'}`, 14, 38);
-            doc.text(`Total Strips Analyzed: ${exp.strips ? exp.strips.length : 0}`, 14, 44);
-
-            let nextY = 50;
-            if (exp.lodCalibration) {
-              doc.setFont('helvetica', 'bold');
-              doc.text(`Analytical Limits & Calibration (CLSI EP17-A2):`, 14, nextY);
-              doc.setFont('helvetica', 'normal');
-              doc.text(`• 4PL Fit Goodness (R²): ${exp.lodCalibration.r_squared}`, 18, nextY + 6);
-              doc.text(`• Limit of Detection (LoD): ${exp.lodCalibration.lod_conc} ${exp.unit}`, 18, nextY + 11);
-              doc.text(`• Limit of Blank (LoB Signal): ${exp.lodCalibration.lob_signal} a.u.`, 18, nextY + 16);
-              nextY += 22;
-
-              if (exp.lodCalibration.lod_plot) {
-                doc.addImage(exp.lodCalibration.lod_plot, 'PNG', 25, nextY, 160, 120);
-                nextY += 125;
-              }
-            }
-
-            // Table of Stored Strips Summary on Page 1
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(9);
-            doc.text('Summary Results Table:', 14, nextY + 4);
-            doc.setFillColor(241, 245, 249);
-            doc.rect(14, nextY + 6, 182, 7, 'F');
-            doc.text('#', 16, nextY + 11);
-            doc.text('Sample Filename', 25, nextY + 11);
-            doc.text('Assigned', 85, nextY + 11);
-            doc.text('T/C Ratio', 115, nextY + 11);
-            doc.text('C Area', 145, nextY + 11);
-            doc.text('Status', 170, nextY + 11);
-
-            doc.setFont('helvetica', 'normal');
-            let tableY = nextY + 18;
-            if (exp.strips) {
-              exp.strips.slice(0, 8).forEach((s, i) => {
-                doc.text(String(i + 1), 16, tableY);
-                doc.text(String(s.fileName).slice(0, 24), 25, tableY);
-                doc.text(`${s.assignedConc} ${s.assignedUnit || exp.unit}`, 85, tableY);
-                doc.text(s.tcRatio.toFixed(4), 115, tableY);
-                doc.text(s.cArea.toFixed(1), 145, tableY);
-                doc.text(s.status, 170, tableY);
-                tableY += 6;
-              });
-            }
-
-            // --- SUBSEQUENT PAGES: Detailed Chromatograms for Each Strip ---
-            if (exp.strips) {
-              exp.strips.forEach((s, idx) => {
-                doc.addPage();
-                // Page Header
-                doc.setFillColor(15, 118, 110); // Teal 700
-                doc.rect(0, 0, 210, 18, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(11);
-                doc.text(`STRIP #${idx + 1}: ${s.fileName}`, 14, 12);
-
-                // Quantitative Box
-                doc.setTextColor(30, 41, 59);
-                doc.setFontSize(9.5);
-                doc.text(`T/C Ratio: ${s.tcRatio.toFixed(4)}   |   Status: ${s.status}`, 14, 25);
-                doc.text(`Assigned: ${s.assignedConc} ${s.assignedUnit || exp.unit}   |   C Area: ${s.cArea.toFixed(1)}   |   T Area: ${s.tArea.toFixed(1)}`, 14, 31);
-
-                // Chromatogram Plot
-                if (s.publicationPlot) {
-                  doc.addImage(s.publicationPlot, 'PNG', 12, 38, 186, 92);
-                }
-
-                // Cropped Strip scan
-                if (s.croppedImage) {
-                  doc.setFont('helvetica', 'bold');
-                  doc.setFontSize(9);
-                  doc.text('Cropped Strip Cassette Scan:', 14, 140);
-                  doc.addImage(s.croppedImage, 'JPEG', 85, 145, 40, 135);
-                }
-              });
-            }
-
-            doc.save(`${baseName}_Combined_Report.pdf`);
-            await showThemedAlert({
-              title: "Export Complete!",
-              message: `Saved Combined Study Report '${baseName}_Combined_Report.pdf' successfully.`,
-              detailText: `📂 ${fullTargetDir}/\n✓ All strip chromatograms and 4PL curve merged into single PDF.`,
-              type: "success",
-              buttonText: "OK, Done"
-            });
+            finalSavedLocation = 'Phone Downloads';
+            localStorage.setItem('rapidquant_last_save_location', finalSavedLocation);
           }
 
-          closeExportDialog();
-        } catch (err) {
-          console.error("Export error:", err);
-          await showThemedAlert({
-            title: "Export Notice",
-            message: "Export encountered an issue.",
-            detailText: err.message,
-            type: "warning"
-          });
-          confirmExportBtnText.textContent = "Export & Save";
-          confirmExportModalBtn.disabled = false;
+        } else {
+          // Save directly to stored location via browser download
+          const blobUrl = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
         }
-      });
+
+        closeExportDialog();
+
+        await showThemedAlert({
+          title: "Export Complete! 💾",
+          message: `Saved '${filename}' successfully.`,
+          detailText: `📁 Location: ${finalSavedLocation}\n✓ All CSV tables, raw JSON data, standard curve, and strip chromatograms saved.`,
+          type: "success",
+          buttonText: "OK, Done"
+        });
+
+      } catch (err) {
+        hideAppLoader();
+        console.error("Export error:", err);
+        await showThemedAlert({
+          title: "Export Notice",
+          message: "An issue occurred while saving files.",
+          detailText: err.message,
+          type: "warning"
+        });
+      }
     }
 
-    // Default trigger function
     function exportExperimentToLocalFiles(exp) {
       openExportDialog(exp);
     }
+
+    window.openExportDialog = openExportDialog;
+    window.closeExportDialog = closeExportDialog;
 
     // --- Home Screen Stats & Recent Folders Renderer ---
     function renderHomeStatsAndRecent() {
