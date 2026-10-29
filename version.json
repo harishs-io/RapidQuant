@@ -1,9 +1,9 @@
 {
   "appName": "RapidQuant",
-  "version": "2.0.0",
-  "build": 1,
-  "releaseDate": "2026-10-28",
+  "version": "2.1.0",
+  "build": 2,
+  "releaseDate": "2026-10-29",
   "otaUrl": "https://harishs-io.github.io/RapidQuant/",
-  "changelog": "Official RapidQuant v2.0.0 point-of-care bioanalytical platform with two-stage YOLOv8 detection, LSPR optical densitometry, 4PL calibration curves, and CLSI EP17-A2 LoD computation."
+  "changelog": "Native camera integration with hardware autofocus, macro lens support, exposure controls, and progressive multi-strip LoD capture preview dialog."
 }
 

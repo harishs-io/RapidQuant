@@ -466,10 +466,10 @@
 
           <div class="grid grid-cols-2 gap-2">
             <!-- Source 1: Camera -->
-            <button id="source-camera-btn" class="p-3 bg-teal-50 hover:bg-teal-100/80 border border-teal-200 rounded-2xl flex flex-col items-center text-center transition card-hover">
+            <button id="source-camera-btn" class="p-3 bg-teal-50 hover:bg-teal-100/80 border border-teal-200 rounded-2xl flex flex-col items-center text-center transition card-hover cursor-pointer">
               <span class="text-2xl mb-1">📸</span>
-              <span class="text-xs font-bold text-teal-900">Device Camera</span>
-              <span class="text-[9px] text-teal-700 mt-0.5">Capture with cassette guide</span>
+              <span class="text-xs font-bold text-teal-900">Phone Camera</span>
+              <span class="text-[9px] text-teal-700 mt-0.5">Autofocus, macro & lighting</span>
             </button>
 
             <!-- Source 2: Phone / Device Files -->
@@ -516,6 +516,14 @@
             </button>
           </div>
 
+          <!-- WebRTC Reticle Fallback Option -->
+          <div class="flex items-center justify-between pt-1 px-1 text-[10px]">
+            <span class="text-slate-400">Prefer in-browser alignment reticle?</span>
+            <button id="btn-open-live-reticle" type="button" class="text-teal-600 font-bold hover:underline cursor-pointer">
+              Open Live Viewfinder Reticle →
+            </button>
+          </div>
+
           <!-- Preloaded Benchmark Library Drawer (Collapsible) -->
           <div class="pt-2 border-t border-slate-100">
             <button id="toggle-presets-btn" class="w-full flex items-center justify-between text-[11px] font-bold text-slate-600 hover:text-teal-600">
@@ -538,9 +546,14 @@
               <h3 class="text-xs font-bold text-slate-900">Loaded Sample Strips</h3>
               <p class="text-[10px] text-slate-400">Click a file name or eye icon to view image preview</p>
             </div>
-            <span id="loaded-count-badge" class="text-[11px] font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
-              0 Strips
-            </span>
+            <div class="flex items-center gap-1.5">
+              <button id="btn-quick-snap-strip" type="button" class="text-[10.5px] font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-2.5 py-1 rounded-xl border border-teal-200 flex items-center gap-1 transition shadow-2xs cursor-pointer active:scale-95">
+                <span>📸</span> Snap Strip
+              </button>
+              <span id="loaded-count-badge" class="text-[11px] font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
+                0 Strips
+              </span>
+            </div>
           </div>
 
           <!-- Dynamic List of Loaded Files -->
@@ -789,25 +802,78 @@
   <!-- MODALS & DIALOGS                                                      -->
   <!-- ===================================================================== -->
 
-  <!-- 1. Camera Multi-Capture Confirmation Dialog -->
-  <div id="cam-confirm-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-5 max-w-sm w-full shadow-2xl text-center space-y-4 border border-slate-100">
-      <div class="w-14 h-14 rounded-full bg-teal-50 border border-teal-200 flex items-center justify-center text-2xl mx-auto text-teal-600">
-        📸
+  <!-- 1. Native Camera Capture Preview & Upload Dialog -->
+  <div id="cam-preview-upload-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-3.5 border border-slate-100 max-h-[92vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📸</span>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900 leading-tight">Strip Photo Captured</h3>
+            <span id="cam-preview-step-badge" class="text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+              Strip #1
+            </span>
+          </div>
+        </div>
+        <button id="cam-preview-close-btn" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-bold cursor-pointer" title="Cancel">
+          ✕
+        </button>
       </div>
-      <div>
-        <h3 class="text-sm font-bold text-slate-900">Strip Photo Captured!</h3>
-        <p id="cam-confirm-count" class="text-xs text-slate-500 mt-1">1 image ready for quantification.</p>
-        <p class="text-xs text-slate-600 font-medium mt-1">Would you like to add more images or proceed to analysis?</p>
+
+      <!-- Image Preview Area -->
+      <div class="relative rounded-2xl bg-slate-950 overflow-hidden border border-slate-200 aspect-[4/3] flex items-center justify-center group">
+        <img id="cam-preview-img" src="" alt="Captured Strip Preview" class="w-full h-full object-contain" />
+        <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none">
+          <span id="cam-preview-meta-pill" class="text-[9.5px] font-mono text-white bg-slate-900/80 backdrop-blur-xs px-2 py-0.5 rounded-lg border border-white/20">
+            Native Camera Photo
+          </span>
+          <span class="text-[9.5px] text-teal-200 bg-teal-950/80 backdrop-blur-xs px-2 py-0.5 rounded-lg border border-teal-400/30">
+            🔍 Check focus & lighting
+          </span>
+        </div>
       </div>
+
+      <!-- Assigned Concentration Control -->
+      <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1.5">
+        <div class="flex items-center justify-between">
+          <label class="text-[11px] font-bold text-slate-700">Assigned Concentration</label>
+          <span id="cam-preview-mode-tag" class="text-[9px] font-bold text-purple-700 uppercase">LoD Point</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="number" step="any" id="cam-preview-conc-input" 
+            class="flex-1 px-3 py-1.5 text-xs bg-white border border-slate-300 rounded-xl font-mono font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500" 
+            placeholder="0.0">
+          <span id="cam-preview-unit-display" class="text-xs font-bold text-slate-500 font-mono px-1">ng/mL</span>
+        </div>
+        <p class="text-[9.5px] text-slate-400">Ensure the cassette window and reaction bands are sharp and not blurred.</p>
+      </div>
+
+      <!-- Next Step Prompt for LoD series (shown after confirming) -->
+      <div id="cam-preview-next-hint" class="hidden text-[11px] text-purple-800 bg-purple-50 p-2.5 rounded-xl border border-purple-200 font-medium leading-relaxed">
+      </div>
+
+      <!-- Action Buttons -->
       <div class="space-y-2 pt-1">
-        <button id="cam-confirm-add-more-btn" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-1.5 border border-slate-200">
-          <span>📸</span> Add More Images
-        </button>
-        <button id="cam-confirm-proceed-btn" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md">
-          ✓ Proceed to Analysis
-        </button>
+        <div id="cam-preview-initial-btns" class="grid grid-cols-2 gap-2">
+          <button id="cam-preview-retake-btn" class="py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-slate-200 active:scale-95 cursor-pointer">
+            <span>🔄</span> Retake
+          </button>
+          <button id="cam-preview-confirm-btn" class="py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md active:scale-95 cursor-pointer">
+            <span>✅</span> Confirm Strip
+          </button>
+        </div>
+        <div id="cam-preview-next-actions" class="hidden space-y-2">
+          <button id="cam-preview-next-cam-btn" class="w-full py-2.5 px-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md active:scale-95 cursor-pointer">
+            <span>📸</span> Capture Next Strip Photo
+          </button>
+          <button id="cam-preview-finish-btn" class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-slate-200 cursor-pointer">
+            View Batch & Quantify →
+          </button>
+        </div>
       </div>
+
     </div>
   </div>
 
@@ -1500,6 +1566,12 @@
 
     async function handleAppBackGesture() {
       // 1. If any modal dialog is currently visible, close it first
+      const camPreviewModal = document.getElementById('cam-preview-upload-modal');
+      if (camPreviewModal && !camPreviewModal.classList.contains('hidden')) {
+        camPreviewModal.classList.add('hidden');
+        pendingCapturedStrip = null;
+        return true;
+      }
       if (themedDialogModal && !themedDialogModal.classList.contains('hidden') && themedDialogModal.style.display !== 'none') {
         closeThemedDialog(false);
         return true;
@@ -2098,28 +2170,11 @@
         // Stop stream
         stopCameraStream();
 
-        // Concentration hint
-        let concHint = 1.0;
-        let unitHint = 'ng/mL';
-        if (currentExperiment && currentExperiment.concs && currentExperiment.concs.length > 0) {
-          concHint = currentExperiment.concs[0].value;
-          unitHint = currentExperiment.concs[0].unit;
-        }
-
-        addLoadedStripItem({
-          name: `Camera_Scan_${Date.now().toString().slice(-4)}.jpg`,
-          size: `${Math.round(snapDataUrl.length * 0.75 / 1024)} KB`,
-          dataUrl: snapDataUrl,
-          assignedConc: concHint,
-          assignedUnit: unitHint
-        });
-
         // Return to loader view
         showView('loader');
 
-        // Show "Add More Images?" Confirmation Dialog
-        document.getElementById('cam-confirm-count').textContent = `${loadedStrips.length} strip(s) currently loaded in batch.`;
-        camConfirmModal.classList.remove('hidden');
+        // Open preview & progressive upload dialog
+        openCamPreviewUploadModal(null, snapDataUrl);
       });
     }
 
@@ -2128,10 +2183,31 @@
     const galleryFileInput = document.getElementById('gallery-file-input');
     const folderFileInput = document.getElementById('folder-file-input');
 
-    // Trigger Camera
+    function triggerNativeCameraCapture() {
+      if (nativeCamInput) {
+        nativeCamInput.value = '';
+        nativeCamInput.click();
+      }
+    }
+
+    // Trigger Phone Native Camera (Primary Camera Action)
     document.getElementById('source-camera-btn').addEventListener('click', () => {
-      openLiveCamera('environment');
+      triggerNativeCameraCapture();
     });
+
+    const btnQuickSnapStrip = document.getElementById('btn-quick-snap-strip');
+    if (btnQuickSnapStrip) {
+      btnQuickSnapStrip.addEventListener('click', () => {
+        triggerNativeCameraCapture();
+      });
+    }
+
+    const btnOpenLiveReticle = document.getElementById('btn-open-live-reticle');
+    if (btnOpenLiveReticle) {
+      btnOpenLiveReticle.addEventListener('click', () => {
+        openLiveCamera('environment');
+      });
+    }
 
     // Trigger File Picker
     document.getElementById('source-gallery-btn').addEventListener('click', () => {
@@ -2438,45 +2514,173 @@
       }
     }
 
-    // Native Camera Fallback Listener
-    const camConfirmModal = document.getElementById('cam-confirm-modal');
+    // =========================================================================
+    // NATIVE CAMERA CAPTURE PREVIEW & PROGRESSIVE UPLOAD DIALOG
+    // =========================================================================
+    let pendingCapturedStrip = null;
+
+    const camPreviewUploadModal = document.getElementById('cam-preview-upload-modal');
+    const camPreviewImg = document.getElementById('cam-preview-img');
+    const camPreviewStepBadge = document.getElementById('cam-preview-step-badge');
+    const camPreviewConcInput = document.getElementById('cam-preview-conc-input');
+    const camPreviewUnitDisplay = document.getElementById('cam-preview-unit-display');
+    const camPreviewModeTag = document.getElementById('cam-preview-mode-tag');
+    const camPreviewMetaPill = document.getElementById('cam-preview-meta-pill');
+    const camPreviewNextHint = document.getElementById('cam-preview-next-hint');
+    const camPreviewInitialBtns = document.getElementById('cam-preview-initial-btns');
+    const camPreviewNextActions = document.getElementById('cam-preview-next-actions');
+    const camPreviewRetakeBtn = document.getElementById('cam-preview-retake-btn');
+    const camPreviewConfirmBtn = document.getElementById('cam-preview-confirm-btn');
+    const camPreviewNextCamBtn = document.getElementById('cam-preview-next-cam-btn');
+    const camPreviewFinishBtn = document.getElementById('cam-preview-finish-btn');
+    const camPreviewCloseBtn = document.getElementById('cam-preview-close-btn');
+
+    function openCamPreviewUploadModal(file, dataUrl) {
+      if (!camPreviewUploadModal) return;
+
+      // Reset dynamic views
+      if (camPreviewNextHint) camPreviewNextHint.classList.add('hidden');
+      if (camPreviewNextActions) camPreviewNextActions.classList.add('hidden');
+      if (camPreviewInitialBtns) camPreviewInitialBtns.classList.remove('hidden');
+
+      const currentIndex = loadedStrips.length;
+      let defaultConc = 1.0;
+      let defaultUnit = 'ng/mL';
+
+      if (currentMode === 'lod' && currentExperiment && currentExperiment.concs && currentExperiment.concs.length > 0) {
+        const totalPoints = currentExperiment.concs.length;
+        if (camPreviewStepBadge) {
+          camPreviewStepBadge.textContent = `Strip #${currentIndex + 1} of ${totalPoints}`;
+          camPreviewStepBadge.className = 'text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200';
+        }
+        if (camPreviewModeTag) camPreviewModeTag.textContent = 'LoD Calibration Point';
+
+        if (currentIndex < totalPoints) {
+          defaultConc = currentExperiment.concs[currentIndex].value;
+          defaultUnit = currentExperiment.concs[currentIndex].unit || 'ng/mL';
+        } else {
+          defaultConc = currentExperiment.concs[totalPoints - 1].value;
+          defaultUnit = currentExperiment.concs[totalPoints - 1].unit || 'ng/mL';
+        }
+      } else {
+        if (camPreviewStepBadge) {
+          camPreviewStepBadge.textContent = `Strip #${currentIndex + 1}`;
+          camPreviewStepBadge.className = 'text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200';
+        }
+        if (camPreviewModeTag) camPreviewModeTag.textContent = 'Target Concentration';
+        if (currentExperiment && currentExperiment.conc != null) {
+          defaultConc = currentExperiment.conc;
+          defaultUnit = currentExperiment.unit || 'ng/mL';
+        }
+      }
+
+      if (camPreviewConcInput) camPreviewConcInput.value = defaultConc;
+      if (camPreviewUnitDisplay) camPreviewUnitDisplay.textContent = defaultUnit;
+      if (camPreviewImg) camPreviewImg.src = dataUrl;
+
+      const approxKb = file ? Math.round(file.size / 1024) : Math.round(dataUrl.length * 0.75 / 1024);
+      const sizeLabel = approxKb > 1024 ? (approxKb / 1024).toFixed(1) + ' MB' : approxKb + ' KB';
+      if (camPreviewMetaPill) camPreviewMetaPill.textContent = `${sizeLabel} • Native Focus`;
+
+      pendingCapturedStrip = {
+        file: file,
+        dataUrl: dataUrl,
+        index: currentIndex,
+        defaultUnit: defaultUnit
+      };
+
+      camPreviewUploadModal.classList.remove('hidden');
+    }
+
+    // Native Camera Input Change Listener
     nativeCamInput.addEventListener('change', (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = async (event) => {
-        let dataUrl = event.target.result;
-
-        let concHint = 1.0;
-        let unitHint = 'ng/mL';
-        if (currentExperiment && currentExperiment.concs && currentExperiment.concs.length > 0) {
-          concHint = currentExperiment.concs[0].value;
-          unitHint = currentExperiment.concs[0].unit;
-        }
-
-        addLoadedStripItem({
-          name: `Camera_Capture_${Date.now().toString().slice(-4)}.jpg`,
-          size: `${Math.round(file.size / 1024)} KB`,
-          dataUrl: dataUrl,
-          assignedConc: concHint,
-          assignedUnit: unitHint
-        });
-
-        // Show "Add More Images?" Confirmation Dialog
-        document.getElementById('cam-confirm-count').textContent = `${loadedStrips.length} strip(s) currently loaded in batch.`;
-        camConfirmModal.classList.remove('hidden');
+      reader.onload = (event) => {
+        openCamPreviewUploadModal(file, event.target.result);
       };
       reader.readAsDataURL(file);
     });
 
-    document.getElementById('cam-confirm-add-more-btn').addEventListener('click', () => {
-      camConfirmModal.classList.add('hidden');
-      openLiveCamera(cameraFacingMode);
-    });
+    // Retake Button: Discards preview and immediately launches native camera again
+    if (camPreviewRetakeBtn) {
+      camPreviewRetakeBtn.addEventListener('click', () => {
+        if (camPreviewUploadModal) camPreviewUploadModal.classList.add('hidden');
+        pendingCapturedStrip = null;
+        triggerNativeCameraCapture();
+      });
+    }
 
-    document.getElementById('cam-confirm-proceed-btn').addEventListener('click', () => {
-      camConfirmModal.classList.add('hidden');
-    });
+    // Close / Cancel Button
+    if (camPreviewCloseBtn) {
+      camPreviewCloseBtn.addEventListener('click', () => {
+        if (camPreviewUploadModal) camPreviewUploadModal.classList.add('hidden');
+        pendingCapturedStrip = null;
+      });
+    }
+
+    // Confirm Strip Button
+    if (camPreviewConfirmBtn) {
+      camPreviewConfirmBtn.addEventListener('click', () => {
+        if (!pendingCapturedStrip) return;
+
+        const userVal = parseFloat(camPreviewConcInput ? camPreviewConcInput.value : '');
+        const finalConc = isNaN(userVal) ? 0.0 : userVal;
+        const finalUnit = pendingCapturedStrip.defaultUnit || 'ng/mL';
+
+        const rawFileName = pendingCapturedStrip.file ? pendingCapturedStrip.file.name : '';
+        const assignedName = rawFileName || `Strip_${pendingCapturedStrip.index + 1}_${finalConc}${finalUnit}.jpg`;
+
+        const approxKb = pendingCapturedStrip.file ? Math.round(pendingCapturedStrip.file.size / 1024) : Math.round(pendingCapturedStrip.dataUrl.length * 0.75 / 1024);
+        const sizeLabel = approxKb > 1024 ? (approxKb / 1024).toFixed(1) + ' MB' : approxKb + ' KB';
+
+        addLoadedStripItem({
+          name: assignedName,
+          size: sizeLabel,
+          dataUrl: pendingCapturedStrip.dataUrl,
+          assignedConc: finalConc,
+          assignedUnit: finalUnit
+        });
+
+        const nextIndex = loadedStrips.length;
+
+        // If in LoD mode and there are more concentrations to capture
+        if (currentMode === 'lod' && currentExperiment && currentExperiment.concs && nextIndex < currentExperiment.concs.length) {
+          const nextPt = currentExperiment.concs[nextIndex];
+          if (camPreviewNextHint) {
+            camPreviewNextHint.innerHTML = `✅ <strong>Strip #${nextIndex} confirmed (${finalConc} ${finalUnit})!</strong><br>Next in series: <strong>Strip #${nextIndex + 1} of ${currentExperiment.concs.length} (${nextPt.value} ${nextPt.unit})</strong>.`;
+            camPreviewNextHint.classList.remove('hidden');
+          }
+          if (camPreviewNextCamBtn) {
+            camPreviewNextCamBtn.innerHTML = `<span>📸</span> Capture Next Strip (${nextPt.value} ${nextPt.unit})`;
+          }
+          if (camPreviewInitialBtns) camPreviewInitialBtns.classList.add('hidden');
+          if (camPreviewNextActions) camPreviewNextActions.classList.remove('hidden');
+        } else {
+          // Completed or Single Strip mode
+          if (camPreviewUploadModal) camPreviewUploadModal.classList.add('hidden');
+          pendingCapturedStrip = null;
+        }
+      });
+    }
+
+    // Next Strip Camera Button: Launches native camera for the next calibration point
+    if (camPreviewNextCamBtn) {
+      camPreviewNextCamBtn.addEventListener('click', () => {
+        if (camPreviewUploadModal) camPreviewUploadModal.classList.add('hidden');
+        pendingCapturedStrip = null;
+        triggerNativeCameraCapture();
+      });
+    }
+
+    // Finish / View Batch Button
+    if (camPreviewFinishBtn) {
+      camPreviewFinishBtn.addEventListener('click', () => {
+        if (camPreviewUploadModal) camPreviewUploadModal.classList.add('hidden');
+        pendingCapturedStrip = null;
+      });
+    }
 
     function addLoadedStripItem(item) {
       item.id = 'strip_' + Math.random().toString(36).substring(2, 9);
@@ -5120,7 +5324,7 @@
     // =========================================================================
     // OVER-THE-AIR (OTA) AUTO-UPDATE CONTROLLER (GitHub Pages Cloud Engine)
     // =========================================================================
-    const RAPIDQUANT_LOCAL_VERSION = '2.0.0';
+    const RAPIDQUANT_LOCAL_VERSION = '2.1.0';
     const GITHUB_OTA_ENDPOINT = 'https://harishs-io.github.io/RapidQuant/version.json';
     const GITHUB_OTA_HTML_URL = 'https://harishs-io.github.io/RapidQuant/index.html';
 
