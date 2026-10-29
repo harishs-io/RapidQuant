@@ -1,8 +1,8 @@
 {
   "appName": "RapidQuant",
-  "version": "2.1.3",
-  "build": 5,
+  "version": "2.1.4",
+  "build": 6,
   "releaseDate": "2026-10-29",
   "otaUrl": "https://harishs-io.github.io/RapidQuant/",
-  "changelog": "Inbuilt device camera launcher with native MediaStore intent, interactive installation progress bar modal with percentage & automatic app restart."
+  "changelog": "Direct Samsung Camera launcher, smart APK updater dialog, live status bar progress on Home screen & Settings."
 }

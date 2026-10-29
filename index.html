@@ -161,7 +161,7 @@
         <div class="min-w-0">
           <div class="text-[11px] font-bold text-teal-100 flex items-center gap-1.5 truncate">
             <span>New Analysis Engine Available</span>
-            <span id="ota-version-tag" class="px-1.5 py-0.2 rounded-md bg-teal-500/30 text-teal-200 text-[10px] font-mono font-bold">v2.1.3</span>
+            <span id="ota-version-tag" class="px-1.5 py-0.2 rounded-md bg-teal-500/30 text-teal-200 text-[10px] font-mono font-bold">v2.1.4</span>
           </div>
           <div id="ota-changelog-text" class="text-[9.5px] text-teal-200/80 truncate">GitHub cloud update ready</div>
         </div>
@@ -184,7 +184,7 @@
         </div>
         <div>
           <h3 id="ota-modal-title" class="text-base font-bold text-slate-900">Installing Engine Update</h3>
-          <p id="ota-modal-subtitle" class="text-xs text-slate-500 mt-0.5">Upgrading to RapidQuant <span id="ota-modal-version" class="font-bold text-teal-600">v2.1.3</span></p>
+          <p id="ota-modal-subtitle" class="text-xs text-slate-500 mt-0.5">Upgrading to RapidQuant <span id="ota-modal-version" class="font-bold text-teal-600">v2.1.4</span></p>
         </div>
 
         <!-- Animated Progress Bar Container -->
@@ -240,7 +240,7 @@
         <div class="flex items-center justify-between px-1 -mt-1">
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[10px] font-bold text-slate-600 font-mono">RapidQuant v2.1.3</span>
+            <span class="text-[10px] font-bold text-slate-600 font-mono">RapidQuant v2.1.4</span>
           </div>
           <button id="home-check-update-chip" type="button" class="text-[10px] font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-2.5 py-0.5 rounded-full flex items-center gap-1 transition active:scale-95 cursor-pointer">
             <span>🔄</span> Check for Updates
@@ -954,6 +954,36 @@
     </div>
   </div>
 
+  <!-- Camera APK Update Required Dialog (for v2.0.0 APK users) -->
+  <div id="camera-apk-update-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-5 max-w-xs w-full shadow-2xl space-y-3.5 border border-slate-100 text-center animate-in fade-in zoom-in-95 duration-150">
+      <div class="w-14 h-14 rounded-2xl bg-teal-50 border border-teal-200 flex items-center justify-center text-2xl mx-auto shadow-inner">
+        📸
+      </div>
+      <div>
+        <h3 class="text-sm font-bold text-slate-900">Inbuilt Device Camera</h3>
+        <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">
+          Your installed app wrapper is <strong class="text-slate-800">v2.0.0</strong>, which routes camera clicks to the gallery. To open your <strong class="text-teal-700">Samsung Camera app directly</strong>, update the app package or open in Chrome:
+        </p>
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <a href="https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk" download="RapidQuant.apk" target="_blank"
+          class="w-full py-2.5 px-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition text-center">
+          <span>⬇️</span> Download & Install APK (v2.1.4)
+        </a>
+        <a href="https://harishs-io.github.io/RapidQuant/" target="_blank"
+          class="w-full py-2.5 px-3 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition text-center">
+          <span>🌐</span> Open in Chrome (Camera Works Now)
+        </a>
+        <button id="camera-apk-fallback-picker-btn" type="button"
+          class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition cursor-pointer">
+          Continue to Gallery Picker
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- App Info & Status Modal -->
   <div id="settings-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl p-5 max-w-sm w-full shadow-2xl space-y-4 border border-slate-100 animate-in fade-in zoom-in duration-200">
@@ -1013,7 +1043,7 @@
         <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
           <div class="flex items-center justify-between text-[11px]">
             <span class="font-bold text-slate-700">App Engine Version</span>
-            <span class="font-mono font-bold text-teal-700 bg-teal-100/80 px-2 py-0.5 rounded-md border border-teal-200">v2.1.3</span>
+            <span class="font-mono font-bold text-teal-700 bg-teal-100/80 px-2 py-0.5 rounded-md border border-teal-200">v2.1.4</span>
           </div>
           <button id="settings-check-update-btn" type="button" class="w-full py-2 px-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs cursor-pointer">
             <span>🔄</span> Check for Updates (Live Status Bar)
@@ -2337,12 +2367,33 @@
         return;
       }
 
-      // 2. Standard Inbuilt Device Camera File Input
+      // 2. Older APK detection (v2.0.0 where Android WebView redirects file input to gallery)
+      if (window.AndroidAssetBridge && typeof window.AndroidAssetBridge.launchNativeCamera !== 'function') {
+        const apkModal = document.getElementById('camera-apk-update-modal');
+        if (apkModal) {
+          apkModal.classList.remove('hidden');
+          return;
+        }
+      }
+
+      // 3. Standard Inbuilt Device Camera File Input
       // Triggers the device's native camera app in mobile browsers and Android systems
       if (nativeCamInput) {
         nativeCamInput.value = '';
         nativeCamInput.click();
       }
+    }
+
+    const cameraApkFallbackPickerBtn = document.getElementById('camera-apk-fallback-picker-btn');
+    if (cameraApkFallbackPickerBtn) {
+      cameraApkFallbackPickerBtn.addEventListener('click', () => {
+        const apkModal = document.getElementById('camera-apk-update-modal');
+        if (apkModal) apkModal.classList.add('hidden');
+        if (nativeCamInput) {
+          nativeCamInput.value = '';
+          nativeCamInput.click();
+        }
+      });
     }
 
     // Android Native Bridge Camera Callback
@@ -5486,7 +5537,7 @@
     // =========================================================================
     // OVER-THE-AIR (OTA) AUTO-UPDATE CONTROLLER (GitHub Pages Cloud Engine)
     // =========================================================================
-    const RAPIDQUANT_LOCAL_VERSION = '2.1.3';
+    const RAPIDQUANT_LOCAL_VERSION = '2.1.4';
     const GITHUB_OTA_ENDPOINT = 'https://harishs-io.github.io/RapidQuant/version.json';
     const GITHUB_OTA_HTML_URL = 'https://harishs-io.github.io/RapidQuant/index.html';
 
