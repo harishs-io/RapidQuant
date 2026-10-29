@@ -1,7 +1,7 @@
 {
   "appName": "RapidQuant",
   "version": "2.2.0",
-  "build": 7,
+  "build": 8,
   "minApkVersion": "2.1.4",
   "apkUrl": "https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk",
   "releaseDate": "2026-10-29",
