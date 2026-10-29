@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lfia-quant-cache-v7';
+const CACHE_NAME = 'lfia-quant-cache-v8';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
