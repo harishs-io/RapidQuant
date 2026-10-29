@@ -1,12 +1,12 @@
 {
   "appName": "RapidQuant",
-  "version": "2.2.0.12",
+  "version": "2.2.0.13",
   "baseVersion": "2.2.0",
-  "build": 12,
-  "displayVersion": "v2.2.0 (Build 12)",
+  "build": 13,
+  "displayVersion": "v2.2.0 (Build 13)",
   "minApkVersion": "2.1.4",
   "apkUrl": "https://raw.githubusercontent.com/harishs-io/RapidQuant/main/RapidQuant.apk",
   "releaseDate": "2026-10-29",
   "otaUrl": "https://harishs-io.github.io/RapidQuant/",
-  "changelog": "Build 12: Fixed navigation view map, resolved strict-mode DOM bindings, and ensured 100% reliable opening of Single Strip, Unknown, LoD, and Saved views."
+  "changelog": "Build 13: Restored Device Photos/Files and Local Folder picker triggers to instantly open phone gallery and folder selection."
 }

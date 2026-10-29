@@ -612,6 +612,28 @@
       });
     }
 
+    // Trigger File Picker (Device Photos / Files)
+    const sourceGalleryBtn = document.getElementById('source-gallery-btn');
+    if (sourceGalleryBtn) {
+      sourceGalleryBtn.addEventListener('click', () => {
+        if (galleryFileInput) {
+          galleryFileInput.value = '';
+          galleryFileInput.click();
+        }
+      });
+    }
+
+    // Trigger Folder Picker (Local Folder)
+    const sourceFolderBtn = document.getElementById('source-folder-btn');
+    if (sourceFolderBtn) {
+      sourceFolderBtn.addEventListener('click', () => {
+        if (folderFileInput) {
+          folderFileInput.value = '';
+          folderFileInput.click();
+        }
+      });
+    }
+
     // Universal Batch File Processor
     async function handleBatchFiles(files) {
       if (!files || files.length === 0) return;

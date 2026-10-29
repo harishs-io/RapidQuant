@@ -9,8 +9,8 @@
   window.RQ = window.RQ || {};
 
   const RAPIDQUANT_LOCAL_VERSION = '2.2.0';
-  const RAPIDQUANT_LOCAL_BUILD = 12;
-  const RAPIDQUANT_FULL_VERSION = '2.2.0.12';
+  const RAPIDQUANT_LOCAL_BUILD = 13;
+  const RAPIDQUANT_FULL_VERSION = '2.2.0.13';
   const GITHUB_OTA_ENDPOINT = 'https://harishs-io.github.io/RapidQuant/version.json';
   const GITHUB_OTA_HTML_URL = 'https://harishs-io.github.io/RapidQuant/index.html';
 
