@@ -1,8 +1,8 @@
 {
   "appName": "RapidQuant",
-  "version": "2.1.2",
-  "build": 4,
+  "version": "2.1.3",
+  "build": 5,
   "releaseDate": "2026-10-29",
   "otaUrl": "https://harishs-io.github.io/RapidQuant/",
-  "changelog": "Interactive installation status bar with real-time percentage, automatic app restart, direct in-app camera fallback for v2.0 APKs, and zero gallery redirection."
+  "changelog": "Inbuilt device camera launcher with native MediaStore intent, interactive installation progress bar modal with percentage & automatic app restart."
 }

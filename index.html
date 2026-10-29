@@ -161,7 +161,7 @@
         <div class="min-w-0">
           <div class="text-[11px] font-bold text-teal-100 flex items-center gap-1.5 truncate">
             <span>New Analysis Engine Available</span>
-            <span id="ota-version-tag" class="px-1.5 py-0.2 rounded-md bg-teal-500/30 text-teal-200 text-[10px] font-mono font-bold">v2.1.2</span>
+            <span id="ota-version-tag" class="px-1.5 py-0.2 rounded-md bg-teal-500/30 text-teal-200 text-[10px] font-mono font-bold">v2.1.3</span>
           </div>
           <div id="ota-changelog-text" class="text-[9.5px] text-teal-200/80 truncate">GitHub cloud update ready</div>
         </div>
@@ -184,7 +184,7 @@
         </div>
         <div>
           <h3 id="ota-modal-title" class="text-base font-bold text-slate-900">Installing Engine Update</h3>
-          <p id="ota-modal-subtitle" class="text-xs text-slate-500 mt-0.5">Upgrading to RapidQuant <span id="ota-modal-version" class="font-bold text-teal-600">v2.1.2</span></p>
+          <p id="ota-modal-subtitle" class="text-xs text-slate-500 mt-0.5">Upgrading to RapidQuant <span id="ota-modal-version" class="font-bold text-teal-600">v2.1.3</span></p>
         </div>
 
         <!-- Animated Progress Bar Container -->
@@ -208,6 +208,12 @@
             <span>✓</span> Update Applied • Restarting...
           </div>
         </div>
+
+        <div id="ota-dismiss-action" class="hidden">
+          <button id="ota-modal-close-btn" type="button" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition cursor-pointer">
+            Close
+          </button>
+        </div>
       </div>
     </div>
 
@@ -228,6 +234,17 @@
             <h1 class="text-lg font-black mt-2 leading-tight tracking-tight">Lateral Flow Immunoassay Quantification <span class="text-teal-200 text-sm font-bold block mt-0.5">(RapidQuant)</span></h1>
             <p class="text-xs text-teal-100 mt-1 leading-relaxed font-medium">Replaces manual ImageJ cropping & spreadsheet analysis: Snap or upload strips to instantly get 4PL standard curves, CLSI EP17-A2 LoD, and publication-ready figures with full replicate statistics.</p>
           </div>
+        </div>
+
+        <!-- App Engine Version & Quick Update Check Chip -->
+        <div class="flex items-center justify-between px-1 -mt-1">
+          <div class="flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-[10px] font-bold text-slate-600 font-mono">RapidQuant v2.1.3</span>
+          </div>
+          <button id="home-check-update-chip" type="button" class="text-[10px] font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-2.5 py-0.5 rounded-full flex items-center gap-1 transition active:scale-95 cursor-pointer">
+            <span>🔄</span> Check for Updates
+          </button>
         </div>
 
         <!-- Quick Summary Metrics -->
@@ -990,6 +1007,17 @@
             <span>Runtime:</span>
             <span class="font-bold text-slate-800">ONNX WebAssembly</span>
           </div>
+        </div>
+
+        <!-- Engine Update & Status Check Section -->
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="font-bold text-slate-700">App Engine Version</span>
+            <span class="font-mono font-bold text-teal-700 bg-teal-100/80 px-2 py-0.5 rounded-md border border-teal-200">v2.1.3</span>
+          </div>
+          <button id="settings-check-update-btn" type="button" class="w-full py-2 px-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition active:scale-95 shadow-xs cursor-pointer">
+            <span>🔄</span> Check for Updates (Live Status Bar)
+          </button>
         </div>
       </div>
       <div class="pt-1">
@@ -2303,21 +2331,14 @@
     const folderFileInput = document.getElementById('folder-file-input');
 
     function triggerNativeCameraCapture() {
-      // 1. Direct Android Native Bridge Camera Launch (In v2.1.1+ APK with MediaStore intent)
+      // 1. Direct Inbuilt Device Camera Launch (Android APK with MediaStore intent)
       if (window.AndroidAssetBridge && typeof window.AndroidAssetBridge.launchNativeCamera === 'function') {
         window.AndroidAssetBridge.launchNativeCamera();
         return;
       }
 
-      // 2. Running in v2.0.0 APK (without launchNativeCamera):
-      // NEVER trigger nativeCamInput.click() here because v2.0.0 WebView onShowFileChooser routes to the Photo Picker!
-      // Instead: DIRECTLY open the In-App Live Camera Viewfinder with autofocus & torch!
-      if (window.AndroidAssetBridge && typeof window.AndroidAssetBridge.launchNativeCamera !== 'function') {
-        openLiveCamera('environment');
-        return;
-      }
-
-      // 3. Mobile Browsers / iOS Safari PWA (browser handles capture="environment" directly)
+      // 2. Standard Inbuilt Device Camera File Input
+      // Triggers the device's native camera app in mobile browsers and Android systems
       if (nativeCamInput) {
         nativeCamInput.value = '';
         nativeCamInput.click();
@@ -5465,7 +5486,7 @@
     // =========================================================================
     // OVER-THE-AIR (OTA) AUTO-UPDATE CONTROLLER (GitHub Pages Cloud Engine)
     // =========================================================================
-    const RAPIDQUANT_LOCAL_VERSION = '2.1.2';
+    const RAPIDQUANT_LOCAL_VERSION = '2.1.3';
     const GITHUB_OTA_ENDPOINT = 'https://harishs-io.github.io/RapidQuant/version.json';
     const GITHUB_OTA_HTML_URL = 'https://harishs-io.github.io/RapidQuant/index.html';
 
@@ -5481,7 +5502,7 @@
       return 0;
     }
 
-    async function installOtaUpdateWithProgress(targetVersion, changelog) {
+    async function installOtaUpdateWithProgress(targetVersion, changelog, forceCheck = false) {
       const modal = document.getElementById('ota-install-modal');
       const icon = document.getElementById('ota-modal-icon');
       const title = document.getElementById('ota-modal-title');
@@ -5489,10 +5510,12 @@
       const pctLabel = document.getElementById('ota-progress-pct');
       const bar = document.getElementById('ota-progress-bar');
       const restartAction = document.getElementById('ota-restart-action');
+      const dismissAction = document.getElementById('ota-dismiss-action');
       const verSpan = document.getElementById('ota-modal-version');
 
-      if (verSpan) verSpan.textContent = `v${targetVersion}`;
       if (modal) modal.classList.remove('hidden');
+      if (restartAction) restartAction.classList.add('hidden');
+      if (dismissAction) dismissAction.classList.add('hidden');
 
       function setProgress(pct, msg) {
         if (pctLabel) pctLabel.textContent = `${pct}%`;
@@ -5504,31 +5527,50 @@
         setProgress(15, 'Connecting to update server...');
         await new Promise(r => setTimeout(r, 350));
 
-        setProgress(35, `Downloading RapidQuant v${targetVersion}...`);
+        let versionToInstall = targetVersion;
+        if (!versionToInstall || forceCheck) {
+          setProgress(25, 'Querying latest release manifest...');
+          const vRes = await fetch(`${GITHUB_OTA_ENDPOINT}?t=${Date.now()}`, { cache: 'no-store' });
+          if (!vRes.ok) throw new Error(`Could not reach server (HTTP ${vRes.status})`);
+          const manifest = await vRes.json();
+          versionToInstall = manifest.version;
+          if (verSpan) verSpan.textContent = `v${versionToInstall || RAPIDQUANT_LOCAL_VERSION}`;
+
+          if (!forceCheck && compareVersions(versionToInstall, RAPIDQUANT_LOCAL_VERSION) <= 0) {
+            setProgress(100, `App is already up-to-date (v${RAPIDQUANT_LOCAL_VERSION})`);
+            if (icon) icon.textContent = '✅';
+            if (title) title.textContent = 'Up to Date!';
+            if (dismissAction) dismissAction.classList.remove('hidden');
+            return;
+          }
+        }
+
+        if (verSpan) verSpan.textContent = `v${versionToInstall}`;
+        setProgress(45, `Downloading RapidQuant v${versionToInstall}...`);
         const htmlRes = await fetch(`${GITHUB_OTA_HTML_URL}?t=${Date.now()}`, { cache: 'no-store' });
         if (!htmlRes.ok) throw new Error(`Server returned HTTP ${htmlRes.status}`);
 
-        setProgress(65, 'Receiving analytical pipeline & scripts...');
+        setProgress(70, 'Receiving analytical pipeline & scripts...');
         const newHtmlContent = await htmlRes.text();
         if (!newHtmlContent || newHtmlContent.length < 5000 || !newHtmlContent.includes('RapidQuant')) {
           throw new Error('Downloaded package failed integrity verification.');
         }
 
-        setProgress(85, 'Writing update to local offline storage...');
+        setProgress(88, 'Writing update to local offline storage...');
         await new Promise(r => setTimeout(r, 350));
 
         if (window.AndroidAssetBridge && window.AndroidAssetBridge.saveOtaUpdate) {
-          window.AndroidAssetBridge.saveOtaUpdate(targetVersion, newHtmlContent);
+          window.AndroidAssetBridge.saveOtaUpdate(versionToInstall, newHtmlContent);
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.IOSBridge) {
           window.webkit.messageHandlers.IOSBridge.postMessage({
             action: 'saveOtaUpdate',
-            version: targetVersion,
+            version: versionToInstall,
             html: newHtmlContent
           });
         } else if (window.FlutterBridge && window.FlutterBridge.postMessage) {
           window.FlutterBridge.postMessage(JSON.stringify({
             action: 'saveOtaUpdate',
-            version: targetVersion,
+            version: versionToInstall,
             html: newHtmlContent
           }));
         }
@@ -5540,7 +5582,7 @@
           } catch(e) {}
         }
 
-        setProgress(100, `v${targetVersion} applied! Restarting app...`);
+        setProgress(100, `v${versionToInstall} applied! Restarting app...`);
         if (icon) icon.textContent = '✅';
         if (title) title.textContent = 'Update Complete!';
         if (restartAction) restartAction.classList.remove('hidden');
@@ -5554,18 +5596,15 @@
         }
       } catch (err) {
         console.error('[RapidQuant OTA] Error applying update:', err);
-        setProgress(0, 'Update failed: ' + err.message);
+        setProgress(0, 'Update notice: ' + err.message);
         if (icon) icon.textContent = '⚠️';
         if (title) title.textContent = 'Update Notice';
-        showToast('Could not complete auto-update: ' + err.message, 'rose');
-        setTimeout(() => {
-          if (modal) modal.classList.add('hidden');
-        }, 3500);
+        if (dismissAction) dismissAction.classList.remove('hidden');
+        showToast('Update notice: ' + err.message, 'amber');
       }
     }
 
     async function checkOtaUpdatesSilent() {
-      // Offline-first: only attempt when device has internet connection
       if (!navigator.onLine) return;
 
       try {
@@ -5600,7 +5639,7 @@
 
             if (otaApplyBtn) {
               otaApplyBtn.onclick = () => {
-                installOtaUpdateWithProgress(manifest.version, manifest.changelog);
+                installOtaUpdateWithProgress(manifest.version, manifest.changelog, false);
               };
             }
 
@@ -5612,9 +5651,35 @@
           }
         }
       } catch (e) {
-        // Silent catch: network timeout, offline, or DNS lookup bypass
         console.debug('[RapidQuant OTA] Background check bypassed:', e.message);
       }
+    }
+
+    // Connect close button on OTA modal
+    const otaModalCloseBtn = document.getElementById('ota-modal-close-btn');
+    if (otaModalCloseBtn) {
+      otaModalCloseBtn.addEventListener('click', () => {
+        const modal = document.getElementById('ota-install-modal');
+        if (modal) modal.classList.add('hidden');
+      });
+    }
+
+    // Connect home check-update chip
+    const homeCheckUpdateChip = document.getElementById('home-check-update-chip');
+    if (homeCheckUpdateChip) {
+      homeCheckUpdateChip.addEventListener('click', () => {
+        installOtaUpdateWithProgress(null, null, true);
+      });
+    }
+
+    // Connect settings check-update button
+    const settingsCheckUpdateBtn = document.getElementById('settings-check-update-btn');
+    if (settingsCheckUpdateBtn) {
+      settingsCheckUpdateBtn.addEventListener('click', () => {
+        const setModal = document.getElementById('settings-modal');
+        if (setModal) setModal.classList.add('hidden');
+        installOtaUpdateWithProgress(null, null, true);
+      });
     }
 
     // Launch OTA check 1.5s after initial UI render (Zero latency impact)
